@@ -10,7 +10,8 @@ toutnet/                      ← ce dépôt (publié tel quel par GitHub Pages)
 ├── js/config.js          ★ TOUT LE CONTENU : tarifs, formules, options, contacts, photos…
 ├── js/main.js            affichage des sections, curseur avant/après
 ├── js/reservation.js     réservation en 4 étapes
-└── assets/               logo, photos (dossier photos/)
+├── mentions-legales.html  mentions légales, confidentialité, conditions
+├── assets/               logo, photos (dossier photos/), polices
 └── reservation/              ← système de réservation (Google Apps Script, non utilisé par la page)
     ├── Code.gs
     ├── appsscript.json
