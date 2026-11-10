@@ -24,6 +24,7 @@ toutnet/                      ← ce dépôt (publié tel quel par GitHub Pages)
 - **Avantages** : service mobile, deux formules, tarifs dégressifs, réservation en ligne.
 - **Formules** : Formule 1 (Aspiration à sec) et Formule 2 (Nettoyage complet par extraction, recommandée), avec leur prix indicatif ; options Véhicule très sale +20 € (supplément ajusté sur place) et Poils d'animaux +15 €.
 - **Tarifs** : fourchettes de prix selon le véhicule (dont Véhicule commercial 90–120 €), packs Famille −10 % et Flotte entreprise −15 %.
+- **Zone d'intervention** : carte avec un cercle de 45 km autour de Lavaur (Toulouse, Albi, Castres) et liste des principales communes. Rayon, villes et communes se règlent dans `js/config.js`, rubrique `zone`.
 - **Avant / Après** : curseur de comparaison sur des photos recalées (banquette, coffre).
 - **Réservation**, en 4 étapes :
   1. **Véhicules** : un onglet par véhicule (type, formule avec le prix ou le supplément affiché, options), et un récapitulatif chiffré ligne par ligne (formule, chaque option, sous-total, remise Famille, durée, prix estimé) ;
