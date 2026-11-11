@@ -71,7 +71,7 @@ Ajouter une ligne dans la liste correspondante de `config.js`. Si la réservatio
 
 Ce dépôt est publié par GitHub Pages depuis la branche `main`, dossier racine (**Settings → Pages**). Chaque modification enregistrée (commit) sur `main` met le site à jour en 1 à 2 minutes.
 
-Adresse : https://contactsynhapse-maker.github.io/toutnet/
+Adresse : https://toutnet-nettoyage.fr/
 
 ### Nom de domaine
 1. Vérifier la disponibilité de `toutnet.fr` (ou `tout-net.fr`, `toutnet81.fr`…) chez un registraire : OVHcloud, Gandi, Ionos… Un `.fr` coûte quelques euros par an.
