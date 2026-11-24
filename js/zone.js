@@ -18,19 +18,34 @@
   var TEL = (C.contact || {}).telephoneAffiche || "";
 
   /* ---------- Textes ---------- */
-  var noms = [Z.centre.nom].concat((Z.villes || []).map(function (v) { return v.nom; }))
-    .filter(function (n, i, a) { return a.indexOf(n) === i; });
   function liste(a) { return a.length > 1 ? a.slice(0, -1).join(", ") + " et " + a[a.length - 1] : a.join(""); }
 
-  section.querySelector("[data-zone-intro]").textContent =
-    "Quentin est basé à " + Z.centre.nom + " et se déplace à l'adresse de votre choix entre " +
-    liste((Z.villes || []).map(function (v) { return v.nom; })) + ", ainsi que dans les communes alentour.";
+  if (Z.titre) section.querySelector("[data-zone-titre]").textContent = Z.titre;
+  section.querySelector("[data-zone-intro]").textContent = Z.intro ||
+    ("Quentin est basé à " + Z.centre.nom + " et se déplace à l'adresse de votre choix entre " +
+    liste((Z.villes || []).map(function (v) { return v.nom; })) + ", ainsi que dans les communes alentour.");
   section.querySelector("[data-zone-legende]").textContent = "Zone colorée : secteur d'intervention habituel (indicatif).";
 
   var box = section.querySelector("[data-zone-communes]");
-  box.appendChild(el("p", { class: "zone__villes-titre", text: "Villes principales" }));
-  box.appendChild(el("ul", { class: "zone__villes" }, noms.map(function (n) { return el("li", { text: n }); })
-    .concat([el("li", { class: "zone__villes-plus", text: "et alentours" })])));
+  var groupes = Z.groupes || [{ titre: "Villes principales", villes: [Z.centre.nom].concat((Z.villes || []).map(function (v) { return v.nom; })), suite: "et alentours" }];
+  groupes.forEach(function (g) {
+    box.appendChild(el("div", { class: "zone__groupe" }, [
+      el("p", { class: "zone__villes-titre", text: g.titre }),
+      el("ul", { class: "zone__villes" }, g.villes.map(function (n) {
+        return el("li", { class: n === Z.centre.nom ? "is-base" : null, text: n });
+      }).concat(g.suite ? [el("li", { class: "zone__villes-plus", text: g.suite })] : [])),
+    ]));
+  });
+
+  if ((Z.modes || []).length) {
+    var modes = el("div", { class: "zone__modes" }, Z.modes.map(function (m) {
+      return el("div", { class: "zone__mode" }, [
+        el("span", { class: "zone__mode-icone", html: Site.icons[m.icone] || "", "aria-hidden": "true" }),
+        el("div", null, [el("h3", { text: m.titre }), el("p", { text: m.texte })]),
+      ]);
+    }));
+    box.parentNode.insertBefore(modes, box);
+  }
 
   var note = section.querySelector("[data-zone-note]");
   note.appendChild(document.createTextNode("Vous êtes à la limite de la zone ? "));

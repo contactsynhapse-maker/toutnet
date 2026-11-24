@@ -165,13 +165,13 @@
         <div class="section__head">
           <p class="eyebrow">Réservation</p>
           <h2>Composez votre formule et réservez</h2>
-          <p class="section__sub">Un ou plusieurs véhicules, votre adresse, votre créneau : c'est tout.</p>
+          <p class="section__sub">À domicile ou à l'atelier, un ou plusieurs véhicules, votre créneau : c'est tout.</p>
         </div>
 
         <div class="booking" data-booking>
           <ol class="steps" aria-label="Étapes de la réservation">
             <li class="steps__item"><span>1</span><em>Véhicules</em></li>
-            <li class="steps__item"><span>2</span><em>Adresse &amp; date</em></li>
+            <li class="steps__item"><span>2</span><em>Lieu &amp; date</em></li>
             <li class="steps__item"><span>3</span><em>Coordonnées</em></li>
             <li class="steps__item"><span>4</span><em>Confirmation</em></li>
           </ol>
@@ -179,13 +179,22 @@
           <form class="booking__form" data-form novalidate autocomplete="on">
             <!-- Étape 1 : véhicules -->
             <div class="step" data-step="1">
-              <div class="vtabs" role="tablist" aria-label="Véhicules" data-vtabs></div>
-              <div class="vpanel" data-vpanel></div>
-              <div class="estimate" data-estimate aria-live="polite"></div>
+              <div class="lieu" data-lieu>
+                <h3 class="step__title">Où souhaitez-vous faire nettoyer votre véhicule ?</h3>
+                <p class="step__hint">Choisissez d'abord le lieu de la prestation.</p>
+                <div class="lieux" data-lieux role="radiogroup" aria-label="Lieu de la prestation"></div>
+              </div>
+              <div class="step1__suite" data-step1-suite hidden>
+                <div class="vtabs" role="tablist" aria-label="Véhicules" data-vtabs></div>
+                <div class="vpanel" data-vpanel></div>
+                <div class="estimate" data-estimate aria-live="polite"></div>
+              </div>
             </div>
 
             <!-- Étape 2 : adresse & créneau -->
             <div class="step" data-step="2" hidden>
+              <div class="atelier-info" data-atelier-info hidden></div>
+              <div data-adresse-client>
               <h3 class="step__title">Où intervient-on ?</h3>
               <p class="step__hint">Tout'Net se déplace à l'adresse de votre choix.</p>
               <div class="fields">
@@ -201,6 +210,7 @@
                   <span>Ville</span>
                   <input type="text" name="ville" autocomplete="address-level2" required>
                 </label>
+              </div>
               </div>
 
               <h3 class="step__title">Choix de la date &amp; de l'heure</h3>

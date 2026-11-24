@@ -45,7 +45,11 @@
     dispo: { cle: null, loading: false, erreur: false, data: null },
     jour: null, heure: null, page: 0,
     envoi: false,
+    lieu: null,
   };
+  var LIEUX = R.lieux || [];
+  function lieuChoisi() { return byId(LIEUX, state.lieu); }
+  function adresseAtelier() { var l = lieuChoisi(); return l && l.adresse ? l.adresse : null; }
 
   /* ---------- Outils ---------- */
   function vehiculeComplet(v) { return !!(v.type && v.formule && (!NIVEAUX.length || v.niveau)); }
@@ -76,8 +80,13 @@
   function dateLongue(s) { return fmtDate(s, { weekday: "long", day: "numeric", month: "long" }); }
   function heureFr(h) { return h ? h.replace(/^0/, "").replace(":", " h ").replace(/ h 00$/, " h") : ""; }
   function val(name) { var f = form.elements[name]; return f ? String(f.value || "").trim() : ""; }
-  function adresse() { return val("rue") + ", " + val("cp") + " " + val("ville"); }
-  function adresseComplete() { return !!(val("rue") && /^\d{5}$/.test(val("cp")) && val("ville")); }
+  function champsAdresse() {
+    var a = adresseAtelier();
+    return a ? { rue: a.rue, cp: a.cp, ville: a.ville } : { rue: val("rue"), cp: val("cp"), ville: val("ville") };
+  }
+  function adresse() { var a = champsAdresse(); return a.rue + ", " + a.cp + " " + a.ville; }
+  function adresseComplete() { var a = champsAdresse(); return !!(a.rue && /^\d{5}$/.test(a.cp) && a.ville); }
+  function lieuTexte() { var a = adresseAtelier(); return a ? "À l'atelier Tout'Net · " + a.cp + " " + a.ville : adresse(); }
   function plusOuPrix(n) { return (n > 0 ? "+" : "") + euros(n); }
 
   /* =================================================================
@@ -219,6 +228,37 @@
     box.appendChild(el("strong", { text: (d.lignes.length > 1 ? calcul + " = " : "") + euros(d.sousTotal) }));
   }
 
+  /* ---------- Choix du lieu (domicile / atelier) ---------- */
+  var lieuxBox = $("[data-lieux]"), suiteBox = $("[data-step1-suite]");
+  function renderLieux() {
+    lieuxBox.textContent = "";
+    LIEUX.forEach(function (l) {
+      lieuxBox.appendChild(el("label", { class: "lieu-choice" }, [
+        el("input", { type: "radio", name: "lieu", value: l.id, checked: state.lieu === l.id }),
+        el("span", { class: "lieu-choice__box" }, [
+          el("span", { class: "lieu-choice__icone", html: Site.icons[l.icone] || "", "aria-hidden": "true" }),
+          el("span", { class: "lieu-choice__nom", text: l.nom }),
+          el("span", { class: "lieu-choice__desc", text: l.description || "" }),
+          el("span", { class: "lieu-choice__check", html: Site.icons.ok, "aria-hidden": "true" }),
+        ]),
+      ]));
+    });
+    suiteBox.hidden = LIEUX.length > 0 && !state.lieu;
+  }
+  lieuxBox.addEventListener("change", function (e) {
+    if (e.target.name !== "lieu") return;
+    var premier = !state.lieu;
+    state.lieu = e.target.value;
+    state.dispo.cle = null; state.jour = null; state.heure = null;
+    errorBox.textContent = "";
+    suiteBox.hidden = false;
+    if (premier) {
+      renderStep1();
+      var top = suiteBox.getBoundingClientRect().top;
+      if (top > window.innerHeight * 0.7) window.scrollTo({ top: window.scrollY + top - 110, behavior: "smooth" });
+    }
+  });
+
   function renderStep1(full) {
     renderTabs();
     if (full !== false) renderPanel();
@@ -280,6 +320,7 @@
   });
 
   function validerStep1() {
+    if (LIEUX.length && !state.lieu) return "Choisissez d'abord le lieu : à domicile ou à l'atelier.";
     for (var i = 0; i < state.vehicules.length; i++) {
       var v = state.vehicules[i];
       if (!vehiculeComplet(v)) {
@@ -547,12 +588,30 @@
     if (first) first.focus();
   }
 
+  var atelierBox = $("[data-atelier-info]"), adresseClientBox = $("[data-adresse-client]");
+  function renderAtelierInfo() {
+    var a = adresseAtelier();
+    adresseClientBox.hidden = !!a;
+    atelierBox.hidden = !a;
+    atelierBox.textContent = "";
+    if (!a) return;
+    atelierBox.appendChild(el("span", { class: "atelier-info__icone", html: Site.icons.atelier, "aria-hidden": "true" }));
+    atelierBox.appendChild(el("div", null, [
+      el("strong", { text: "Prestation à l'atelier Tout'Net" }),
+      el("span", { text: a.cp + " " + a.ville }),
+      el("button", { type: "button", class: "link-btn", "data-changer-lieu": "" }, ["Changer de lieu"]),
+    ]));
+  }
+  root.addEventListener("click", function (e) { if (e.target.closest("[data-changer-lieu]")) goTo(1); });
+
   function validerStep2() {
     var bad = [];
+    if (!adresseAtelier()) {
     if (!val("rue")) bad.push("rue");
     if (!/^\d{5}$/.test(val("cp"))) bad.push("cp");
     if (!val("ville")) bad.push("ville");
     if (bad.length) { marquer(bad); return "Indiquez l'adresse complète où intervenir (code postal à 5 chiffres)."; }
+    }
     if (!API && !DEMO) return "La réservation en ligne n'est pas encore disponible.";
     if (!state.jour || !state.heure) {
       if (!state.dispo.data && !state.dispo.loading) chargerDispos();
@@ -594,8 +653,8 @@
     vehBlock.appendChild(est);
     recapBox.appendChild(vehBlock);
     renderDetail(est);
-    recapBox.appendChild(recapBlock("Adresse & créneau", 2, [
-      el("p", { text: adresse() }),
+    recapBox.appendChild(recapBlock("Lieu & créneau", 2, [
+      el("p", { text: lieuTexte() }),
       el("p", { style: "font-weight:700", text: dateLongue(state.jour) + " à " + heureFr(state.heure) }),
     ]));
     recapBox.appendChild(recapBlock("Vos coordonnées", 3, [
@@ -655,7 +714,8 @@
           prix: d ? d.sousTotal : null, resume: d ? resumeVehicule(d) : "",
         };
       }),
-      adresse: { rue: val("rue"), cp: val("cp"), ville: val("ville") },
+      adresse: champsAdresse(),
+      lieu: state.lieu || "domicile",
       creneau: { date: state.jour, heure: state.heure },
       client: { prenom: val("prenom"), nom: val("nom"), telephone: val("telephone"), email: val("email") },
       remarques: val("remarques"),
@@ -700,7 +760,7 @@
     box.appendChild(el("p", { text: "Il la vérifie et vous recontacte très rapidement pour confirmer le rendez-vous (heure d'arrivée) ou vous proposer un autre horaire. Un e-mail récapitulatif vous est envoyé à " + val("email") + "." }));
     box.appendChild(el("ul", { class: "done__recap" }, [
       el("li", null, [el("span", { text: "Véhicule" + (e.nb > 1 ? "s" : "") }), el("strong", { text: e.details.map(function (d) { return d.type.nom + (d.formule ? " · " + d.formule.nom : ""); }).join(" / ") })]),
-      el("li", null, [el("span", { text: "Adresse" }), el("strong", { text: adresse() })]),
+      el("li", null, [el("span", { text: "Lieu" }), el("strong", { text: lieuTexte() })]),
       el("li", null, [el("span", { text: "Prix estimé" }), el("strong", { text: euros(e.total) })]),
       res.reference ? el("li", null, [el("span", { text: "Référence" }), el("strong", { text: res.reference })]) : null,
     ]));
@@ -724,7 +784,7 @@
 
   function reinitialiser() {
     state.vehicules = [nouveauVehicule()];
-    state.actif = 0; state.jour = null; state.heure = null;
+    state.actif = 0; state.jour = null; state.heure = null; state.lieu = null;
     state.dispo = { cle: null, loading: false, erreur: false, data: null };
     form.reset();
     goTo(1, { noScroll: true });
@@ -748,8 +808,8 @@
     navBox.hidden = false;
     errorBox.textContent = "";
 
-    if (step === 1) renderStep1();
-    if (step === 2) chargerDispos();
+    if (step === 1) { renderLieux(); renderStep1(); }
+    if (step === 2) { renderAtelierInfo(); chargerDispos(); }
     if (step === 4) renderRecap();
 
     if (!opts || !opts.noScroll) {

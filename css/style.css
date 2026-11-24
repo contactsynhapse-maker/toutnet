@@ -538,7 +538,16 @@ button, input, textarea { font: inherit; }
 .zone__villes-titre { margin: 0 0 12px; font-weight: 800; font-size: 1.05rem; color: var(--c-navy); }
 .zone__villes { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .zone__villes li { background: var(--c-tint); color: var(--c-navy); font-weight: 600; padding: 7px 14px; border-radius: 999px; font-size: .95rem; }
-.zone__villes li:first-child { background: var(--c-navy); color: var(--c-white); }
+.zone__villes li.is-base { background: var(--c-navy); color: var(--c-white); }
+.zone__communes { display: grid; gap: 18px; }
+@media (min-width: 700px) { .zone__communes { grid-template-columns: 1.6fr 1fr; } }
+.zone__modes { margin-top: 28px; display: grid; gap: 12px; }
+@media (min-width: 700px) { .zone__modes { grid-template-columns: 1fr 1fr; gap: 16px; } }
+.zone__mode { display: flex; gap: 14px; align-items: flex-start; background: var(--c-white); border-radius: var(--radius); padding: 18px 20px; border: 1px solid var(--c-line); }
+.zone__mode h3 { margin: 0 0 4px; font-size: 1.02rem; color: var(--c-navy); }
+.zone__mode p { margin: 0; color: var(--c-muted); font-size: .94rem; line-height: 1.5; }
+.zone__mode-icone { flex: none; width: 44px; height: 44px; border-radius: 12px; background: var(--c-navy); color: var(--c-yellow); display: grid; place-items: center; }
+.zone__mode-icone svg { width: 24px; height: 24px; }
 .zone__villes .zone__villes-plus { background: none; color: var(--c-muted); font-weight: 500; padding-left: 4px; }
 .zone__note { margin: 20px 0 0; color: var(--c-muted); font-size: .94rem; }
 .zone__note a { color: var(--c-blue); font-weight: 700; text-decoration: none; }
@@ -549,3 +558,34 @@ button, input, textarea { font: inherit; }
 .leaflet-tooltip.zone-label--base { background: var(--c-navy); color: var(--c-white); }
 .leaflet-tooltip.zone-label--petit { font-size: 10px; padding: 2px 6px; }
 .leaflet-container { font-family: var(--font); }
+
+/* ---------- Réservation : choix du lieu (domicile / atelier) ---------- */
+.lieux { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; margin-bottom: 8px; }
+.lieu-choice { position: relative; display: block; cursor: pointer; }
+.lieu-choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.lieu-choice__box {
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; height: 100%;
+  background: var(--c-white); border: 2px solid var(--c-line); border-radius: var(--radius); padding: 18px 16px 16px;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+}
+.lieu-choice:hover .lieu-choice__box { border-color: #b3c0d9; }
+.lieu-choice input:focus-visible + .lieu-choice__box { box-shadow: 0 0 0 3px rgba(29, 79, 158, .35); }
+.lieu-choice input:checked + .lieu-choice__box { border-color: var(--c-navy); background: var(--c-navy); color: var(--c-white); box-shadow: var(--shadow); }
+.lieu-choice__icone { width: 48px; height: 48px; border-radius: 14px; background: var(--c-tint); color: var(--c-blue); display: grid; place-items: center; margin-bottom: 4px; }
+.lieu-choice__icone svg { width: 26px; height: 26px; }
+.lieu-choice input:checked + .lieu-choice__box .lieu-choice__icone { background: var(--c-yellow); color: var(--c-navy); }
+.lieu-choice__nom { font-weight: 800; font-size: 1.05rem; line-height: 1.25; }
+.lieu-choice__desc { color: var(--c-muted); font-size: .86rem; line-height: 1.45; }
+.lieu-choice input:checked + .lieu-choice__box .lieu-choice__desc { color: rgba(255,255,255,.8); }
+.lieu-choice__check { position: absolute; top: 14px; right: 14px; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--c-line); display: grid; place-items: center; color: transparent; }
+.lieu-choice__check svg { width: 14px; height: 14px; }
+.lieu-choice input:checked + .lieu-choice__box .lieu-choice__check { background: var(--c-yellow); border-color: var(--c-yellow); color: var(--c-navy); }
+@media (max-width: 420px) { .lieu-choice__box { padding: 16px 12px 14px; } .lieu-choice__nom { font-size: .98rem; } .lieu-choice__desc { font-size: .8rem; } }
+.step1__suite { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--c-line); }
+
+.atelier-info { display: flex; gap: 14px; align-items: center; background: var(--c-tint); border: 1px solid var(--c-line); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 28px; }
+.atelier-info__icone { flex: none; width: 44px; height: 44px; border-radius: 12px; background: var(--c-navy); color: var(--c-yellow); display: grid; place-items: center; }
+.atelier-info__icone svg { width: 24px; height: 24px; }
+.atelier-info strong { display: block; color: var(--c-navy); }
+.atelier-info div > span { display: block; color: var(--c-muted); font-size: .92rem; }
+.atelier-info .link-btn { margin-top: 2px; }

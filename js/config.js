@@ -43,7 +43,7 @@ window.SITE_CONFIG = {
     whatsapp: "33647590673",  // À CONFIRMER — même numéro que le téléphone ?
     email: "tout.net81@gmail.com",
     instagram: "tout.net81",
-    zone: "Toulouse, Albi, Castres et alentours",
+    zone: "Tout le Tarn et Toulouse",
     horaires: "",             // À DÉFINIR (facultatif)
   },
 
@@ -62,7 +62,7 @@ window.SITE_CONFIG = {
      Icônes : mobile, formules, remise, calendrier, goutte, etoile
      ------------------------------------------------------------------ */
   avantages: [
-    { icone: "mobile",     titre: "On vient à vous",      texte: "Service mobile : votre véhicule est nettoyé sans que vous ayez à vous déplacer." },
+    { icone: "mobile",     titre: "À domicile ou à l'atelier", texte: "Chez vous, sur votre lieu de travail ou à l'atelier de Lavaur : vous choisissez." },
     { icone: "formules",   titre: "Deux formules",        texte: "De l'aspiration rapide au nettoyage complet par extraction." },
     { icone: "remise",     titre: "Tarifs dégressifs",    texte: "−10 % de 2 à 4 véhicules, −15 % à partir de 5." },
     { icone: "calendrier", titre: "Réservation en ligne", texte: "Composez votre formule et choisissez votre créneau en quelques clics." },
@@ -153,14 +153,29 @@ window.SITE_CONFIG = {
      La zone affichée est une seule forme qui englobe :
        - un cercle de `rayonKm` autour du point de départ (centre),
        - un cercle plus petit autour de chaque lieu de `extensions`.
-     villes : repères affichés sur la carte et villes citées dans le texte
+     villes : repères affichés sur la carte
               (etiquetteMobile : côté de l'étiquette sur téléphone, facultatif).
+     groupes : listes de villes affichées sous la carte (titre + villes + suite).
      ------------------------------------------------------------------ */
   zone: {
+    titre: "Tout le Tarn, et jusqu'à Toulouse",
+    intro: "Tout'Net est basé à Lavaur. Quentin intervient dans tout le Tarn et sur Toulouse : à votre domicile, sur votre lieu de travail, ou à l'atelier de Lavaur.",
+    groupes: [
+      { titre: "Dans tout le Tarn", villes: ["Lavaur", "Albi", "Castres", "Gaillac", "Lacaune"], suite: "et toutes les communes du département" },
+      { titre: "En Haute-Garonne",  villes: ["Toulouse"] },
+    ],
+    modes: [
+      { icone: "domicile", titre: "À domicile ou au travail", texte: "Quentin vient à l'adresse de votre choix, dans tout le Tarn et sur Toulouse." },
+      { icone: "atelier",  titre: "À l'atelier de Lavaur",    texte: "Vous amenez votre véhicule à l'atelier Tout'Net, à Lavaur." },
+    ],
     centre: { nom: "Lavaur", lat: 43.6986, lng: 1.8186 },
     rayonKm: 42,
+    // Extensions pour couvrir tout le Tarn (nord, est, sud) — zone indicative
     extensions: [
-      { nom: "Lacaune", lat: 43.7083, lng: 2.6917, rayonKm: 20 },
+      { nom: "Lacaune",  lat: 43.7083, lng: 2.6917, rayonKm: 20 },
+      { nom: "Carmaux",  lat: 44.0506, lng: 2.1581, rayonKm: 18 },
+      { nom: "Cordes-sur-Ciel", lat: 44.0633, lng: 1.9531, rayonKm: 16 },
+      { nom: "Mazamet",  lat: 43.4917, lng: 2.3733, rayonKm: 16 },
     ],
     villes: [
       { nom: "Toulouse", lat: 43.6047, lng: 1.4442 },
@@ -187,6 +202,15 @@ window.SITE_CONFIG = {
      RÉSERVATION
      ------------------------------------------------------------------ */
   reservation: {
+    // Lieu de la prestation : premier choix du parcours de réservation.
+    // Pour l'atelier, l'adresse ci-dessous est utilisée à la place de celle
+    // du client (calcul des créneaux, agenda, e-mails).
+    lieux: [
+      { id: "domicile", icone: "domicile", nom: "À domicile", description: "Chez vous ou sur votre lieu de travail. Quentin se déplace dans tout le Tarn et sur Toulouse." },
+      { id: "atelier",  icone: "atelier",  nom: "À l'atelier", description: "Vous amenez votre véhicule à l'atelier Tout'Net, à Lavaur.",
+        adresse: { rue: "Atelier Tout'Net", cp: "81500", ville: "Lavaur" } },   // À COMPLÉTER — adresse exacte de l'atelier
+    ],
+
     // Adresse du service Google Apps Script (voir toutnet/reservation/GUIDE.md).
     // Tant qu'elle est vide, le site fonctionne en mode « demande » :
     // le client indique une date souhaitée et envoie sa demande par
