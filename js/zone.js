@@ -92,7 +92,7 @@
     var cadre = L.latLngBounds(forme);
     map.fitBounds(cadre, { padding: [14, 14] });   // la carte doit être positionnée avant d'y ajouter des formes
 
-    L.polygon(forme, { color: "#1e6be6", weight: 2.5, fillColor: "#1e6be6", fillOpacity: 0.12, smoothFactor: 0.5 }).addTo(map);
+    L.polygon(forme, { color: "#1d4f9e", weight: 2.5, fillColor: "#1d4f9e", fillOpacity: 0.12, smoothFactor: 0.5 }).addTo(map);
 
     var centre = [Z.centre.lat, Z.centre.lng];
     // Petite carte (téléphone) : étiquettes plus courtes et placées au-dessus / en dessous des points
@@ -110,7 +110,7 @@
         dir = v.etiquetteMobile || (v.lat >= Z.centre.lat ? "top" : "bottom");
         off = { top: [0, -6], bottom: [0, 6], left: [-6, 0], right: [6, 0] }[dir];
       }
-      L.circleMarker([v.lat, v.lng], { radius: petit ? 5 : 6, color: "#ffffff", weight: 2, fillColor: "#0e2a5c", fillOpacity: 1 })
+      L.circleMarker([v.lat, v.lng], { radius: petit ? 5 : 6, color: "#ffffff", weight: 2, fillColor: "#0b1d40", fillOpacity: 1 })
         .addTo(map).bindTooltip(v.nom, { permanent: true, direction: dir, offset: off, className: cls });
     });
 
