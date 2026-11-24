@@ -247,17 +247,30 @@
   }
   lieuxBox.addEventListener("change", function (e) {
     if (e.target.name !== "lieu") return;
+    choisirLieu(e.target.value, true);
+  });
+  // Boutons « Réserver à domicile / à l'atelier » de la section Lieux
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-choisir-lieu]");
+    if (!b) return;
+    if (state.step !== 1) goTo(1, { noScroll: true });
+    choisirLieu(b.getAttribute("data-choisir-lieu"), false);
+    renderLieux();
+  });
+  function choisirLieu(id, defiler) {
     var premier = !state.lieu;
-    state.lieu = e.target.value;
+    if (state.lieu === id) return;
+    state.lieu = id;
     state.dispo.cle = null; state.jour = null; state.heure = null;
     errorBox.textContent = "";
     suiteBox.hidden = false;
     if (premier) {
       renderStep1();
+      if (!defiler) return;
       var top = suiteBox.getBoundingClientRect().top;
       if (top > window.innerHeight * 0.7) window.scrollTo({ top: window.scrollY + top - 110, behavior: "smooth" });
     }
-  });
+  }
 
   function renderStep1(full) {
     renderTabs();

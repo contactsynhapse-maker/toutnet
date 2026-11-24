@@ -28,7 +28,7 @@ Ce fichier est destiné à Claude. Il résume tout ce qu'il faut savoir pour fai
    - aux identifiants `id` des véhicules, formules et options dans `js/config.js`, qui sont liés au système de réservation (voir §5) ;
    - à `apiUrl`.
 5. **Les frais de déplacement ne sont jamais affichés au client.** C'est une décision de Quentin.
-6. **Pas de nouvelles dépendances externes** (CDN, polices Google, traceurs, cookies publicitaires). Le site est volontairement autonome : polices et Leaflet sont hébergés dans le dépôt, il n'y a pas de bandeau cookies car il n'y a pas de traceurs. Ajouter Google Analytics, par exemple, imposerait un bandeau de consentement.
+6. **Pas de nouvelles dépendances externes** (CDN, polices Google, traceurs, cookies publicitaires). Le site est volontairement autonome : les polices sont hébergées dans le dépôt, il n'y a pas de bandeau cookies car il n'y a pas de traceurs. Ajouter Google Analytics, par exemple, imposerait un bandeau de consentement.
 
 ## 3. Comment le site est publié
 
@@ -39,23 +39,24 @@ Ce fichier est destiné à Claude. Il résume tout ce qu'il faut savoir pour fai
   - soit tu ouvres une pull request et tu lui expliques comment la fusionner (bouton vert **« Merge pull request »** puis **« Confirm merge »** sur GitHub).
 
   Dans tous les cas, dis-lui clairement si c'est en ligne ou pas encore.
+- **24/11/2026 : Quentin a autorisé la mise en ligne directe sur `main`** pour vérifier chaque modification en temps réel.
 - Après publication, invite Quentin à recharger la page sur son téléphone. Si l'ancienne version reste affichée, c'est le cache : tirer vers le bas pour recharger, ou attendre une minute.
 
 ## 4. Organisation des fichiers
 
 ```
 index.html             page unique (sections : accueil, avantages, avant/après,
-                       formules, tarifs, zone, réservation, contact) + SEO (balises
+                       formules, tarifs, lieux, réservation, contact) + SEO (balises
                        meta, JSON-LD « AutoWash »)
 css/style.css          tout le style ; couleurs en variables en haut (--c-blue,
                        --c-navy, --c-yellow…)
 js/config.js           ★ TOUT LE CONTENU : textes, prix, formules, options, packs,
-                       zone, photos avant/après, réglages de la réservation
+                       lieux (domicile / atelier), photos avant/après, réglages de la réservation
 js/main.js             affichage des sections à partir de config.js, estimation
                        du prix, curseur avant/après
 js/reservation.js      parcours de réservation (véhicules → adresse + créneau →
                        coordonnées → récapitulatif → « Valider ma demande »)
-js/zone.js             carte de la zone (Leaflet, tuiles OpenStreetMap)
+js/lieux.js            section « Chez vous ou à l'atelier » (cartes Domicile / Atelier)
 decision.html          page privée de Quentin pour Accepter / Refuser une demande
                        (ouverte depuis l'email ; exclue des moteurs via robots.txt)
 mentions-legales.html  mentions légales + confidentialité + conditions de réservation
@@ -63,7 +64,6 @@ reservation/           code du serveur de réservation (Google Apps Script) :
                        Code.gs, appsscript.json, GUIDE.md
 assets/                logo, favicon, photos avant/après (photos/),
                        photos de véhicules (vehicules/), polices (fonts/)
-vendor/leaflet/        bibliothèque de carte, hébergée localement
 sitemap.xml, robots.txt, CNAME
 ```
 
@@ -95,14 +95,16 @@ sitemap.xml, robots.txt, CNAME
   Champs disponibles : `etiquette`, `nom`, `sousTitre`, `duree`, `accroche`, `inclus` (liste à puces), `badge`.
 - `options` : Véhicule très sale +20 € (ajusté sur place) et Poils d'animaux +15 €. Le prix des options **s'ajoute** à celui de la formule (exemple affiché sur le site : SUV formule 2 très sale = 140 + 20 = 160 €).
 - `packs` : remise selon le nombre de véhicules d'une même réservation. Famille −10 % de 2 à 4 véhicules, Flotte entreprise −15 % dès 5 véhicules. Avec `appliquer: true`, la remise est déduite de l'estimation.
-- `zone` : la carte. Elle montre un cercle de `rayonKm` (42 km) autour de Lavaur et une extension de 20 km autour de Lacaune, fusionnés en une seule forme, plus les villes repères. Quentin a demandé une liste de villes courte : Toulouse, Albi, Gaillac, Castres, Lacaune.
+- `sectionLieux` : titre et intro de la section « Chez vous ou à l'atelier ». **Il n'y a plus de carte ni de « zone »** (décision de Quentin, 24/11/2026) : à domicile (déplacements Toulouse, Albi, Castres, Gaillac, Lacaune) ou à l'atelier de Lavaur.
 - `galerie` : photos avant/après, avec `titre`, `description` (phrase affichée sous le titre), `avant` et `apres`.
   - Les deux photos d'une paire doivent avoir **le même cadrage et les mêmes dimensions**, sinon le curseur décale l'image.
   - Format JPG, 1200–1600 px de large, moins de 500 Ko environ.
   - Si Quentin envoie des photos de téléphone (HEIC, très lourdes, pas alignées), convertis-les en JPG, redimensionne et recadre-les à l'identique avant de les ajouter dans `assets/photos/`.
-- `reservation` : `apiUrl` (adresse du serveur Google, **ne pas modifier**), `mentionEstimation` (texte sous le prix estimé) et `durees` (durées de secours ; voir §5).
+- `reservation` : `lieux` (Domicile / Atelier : textes, villes, adresse de l'atelier, utilisés par la section Lieux et par la 1re question de la réservation), `apiUrl` (adresse du serveur Google, **ne pas modifier**), `mentionEstimation` (texte sous le prix estimé) et `durees` (durées de secours ; voir §5).
 
 ## 5. Réservation en ligne (Google)
+
+- **Parcours** : le client choisit d'abord **À domicile** ou **À l'atelier** (Lavaur), puis ses véhicules et formules. Les boutons « Réserver » mènent à `#choix-lieu`. Pour l'atelier, aucune adresse n'est demandée : l'adresse envoyée au serveur est celle de `reservation.lieux` (« Atelier Tout'Net, 81500 Lavaur »), et le champ `lieu` est ajouté à la demande (ignoré par `Code.gs` pour l'instant). L'adresse exacte de l'atelier reste à demander à Quentin.
 
 Le serveur tourne sur le **compte Google de Tout'Net** (tout.net81@gmail.com), avec Google Apps Script. Le code est dans `reservation/Code.gs`. Le site l'interroge via `apiUrl`.
 
@@ -129,7 +131,7 @@ Le serveur tourne sur le **compte Google de Tout'Net** (tout.net81@gmail.com), a
 Déjà en place :
 - éditeur : Quentin Soulié EI, SIRET 130 691 470 00012, APE 4520A, TVA non applicable (art. 293 B du CGI) ;
 - hébergeur : GitHub ;
-- politique de confidentialité, dont les tuiles OpenStreetMap de la carte ;
+- politique de confidentialité ;
 - conditions de réservation : **annulation gratuite jusqu'à 24 h avant**, **paiement sur place à la fin de la prestation**.
 
 Avant d'envoyer sa demande, le client coche une case d'acceptation des conditions.
@@ -164,8 +166,6 @@ Si une modification touche aux conditions (annulation, paiement, prix…), mets 
 ## 10. Problèmes déjà rencontrés (pour ne pas les refaire)
 
 - L'attribut `hidden` est forcé par `[hidden]{display:none!important}` dans le CSS, parce que `.btn` le surchargeait. Ne retire pas cette règle.
-- La carte utilise les tuiles **OpenStreetMap**. Les tuiles CARTO demandent une clé API et affichent « API KEY REQUIRED ».
-- Avec Leaflet, il faut appeler `fitBounds` **avant** d'ajouter les formes, sinon on obtient une erreur `layerPointToLatLng`.
-- Sur mobile, les noms de villes de la carte se chevauchaient. Le réglage `etiquetteMobile` (sur Albi) place l'étiquette sur le côté.
+- La carte de zone (Leaflet) a été retirée le 24/11/2026. L'ancienne version complète du site est conservée sur la branche `sauvegarde-2026-11-24`.
 - Les photos de véhicules ont un fond blanc et une ombre au sol douce et fondue. Une nouvelle photo doit être retouchée de la même façon pour rester homogène.
 - Google refuse les photos HEIC pour la fiche Business : il faut les convertir en JPG.

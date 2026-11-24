@@ -524,40 +524,6 @@ button, input, textarea { font: inherit; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
 
-/* ---------- Zone d'intervention ---------- */
-.zone { background: var(--c-tint); }
-.zone__head { background: var(--c-navy); color: var(--c-white); text-align: center; padding: clamp(56px, 9vw, 96px) 0 clamp(110px, 14vw, 150px); }
-.zone__head h2 { color: var(--c-white); max-width: 760px; margin: 0 auto 14px; text-wrap: balance; }
-.zone__lead { color: rgba(255,255,255,.82); font-size: 1.05rem; max-width: 640px; margin: 0 auto; }
-.zone__body { margin-top: calc(-1 * clamp(70px, 10vw, 100px)); padding-bottom: clamp(56px, 9vw, 96px); }
-.zone__map-wrap { background: var(--c-white); border-radius: calc(var(--radius) + 4px); box-shadow: var(--shadow-lg); padding: 10px; }
-.zone__map { height: clamp(320px, 52vw, 480px); border-radius: var(--radius); overflow: hidden; background: #e6ebf3; z-index: 0; }
-.zone__map--erreur::after { content: "La carte n'a pas pu être chargée."; display: grid; place-items: center; height: 100%; color: var(--c-muted); }
-.zone__credit { margin: 10px 6px 2px; font-size: .88rem; font-weight: 600; color: var(--c-navy); }
-.zone__communes { margin-top: 28px; background: var(--c-white); border-radius: var(--radius); padding: 20px 24px; border: 1px solid var(--c-line); }
-.zone__villes-titre { margin: 0 0 12px; font-weight: 800; font-size: 1.05rem; color: var(--c-navy); }
-.zone__villes { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.zone__villes li { background: var(--c-tint); color: var(--c-navy); font-weight: 600; padding: 7px 14px; border-radius: 999px; font-size: .95rem; }
-.zone__villes li.is-base { background: var(--c-navy); color: var(--c-white); }
-.zone__communes { display: grid; gap: 18px; }
-@media (min-width: 700px) { .zone__communes { grid-template-columns: 1.6fr 1fr; } }
-.zone__modes { margin-top: 28px; display: grid; gap: 12px; }
-@media (min-width: 700px) { .zone__modes { grid-template-columns: 1fr 1fr; gap: 16px; } }
-.zone__mode { display: flex; gap: 14px; align-items: flex-start; background: var(--c-white); border-radius: var(--radius); padding: 18px 20px; border: 1px solid var(--c-line); }
-.zone__mode h3 { margin: 0 0 4px; font-size: 1.02rem; color: var(--c-navy); }
-.zone__mode p { margin: 0; color: var(--c-muted); font-size: .94rem; line-height: 1.5; }
-.zone__mode-icone { flex: none; width: 44px; height: 44px; border-radius: 12px; background: var(--c-navy); color: var(--c-yellow); display: grid; place-items: center; }
-.zone__mode-icone svg { width: 24px; height: 24px; }
-.zone__villes .zone__villes-plus { background: none; color: var(--c-muted); font-weight: 500; padding-left: 4px; }
-.zone__note { margin: 20px 0 0; color: var(--c-muted); font-size: .94rem; }
-.zone__note a { color: var(--c-blue); font-weight: 700; text-decoration: none; }
-/* Repères de la carte */
-.zone-pin span { display: block; width: 26px; height: 26px; border-radius: 50%; background: var(--c-yellow); border: 3px solid var(--c-navy); box-shadow: 0 2px 8px rgba(11, 29, 64,.4); }
-.leaflet-tooltip.zone-label { background: var(--c-white); color: var(--c-navy); border: 0; border-radius: 6px; box-shadow: 0 1px 4px rgba(11, 29, 64,.25); font: 700 12px/1.2 var(--font); padding: 4px 8px; }
-.leaflet-tooltip.zone-label::before { display: none; }
-.leaflet-tooltip.zone-label--base { background: var(--c-navy); color: var(--c-white); }
-.leaflet-tooltip.zone-label--petit { font-size: 10px; padding: 2px 6px; }
-.leaflet-container { font-family: var(--font); }
 
 /* ---------- Réservation : choix du lieu (domicile / atelier) ---------- */
 .lieux { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; margin-bottom: 8px; }
@@ -589,3 +555,23 @@ button, input, textarea { font: inherit; }
 .atelier-info strong { display: block; color: var(--c-navy); }
 .atelier-info div > span { display: block; color: var(--c-muted); font-size: .92rem; }
 .atelier-info .link-btn { margin-top: 2px; }
+
+/* ---------- Section « À domicile ou à l'atelier » ---------- */
+.lieux-section { background: var(--c-tint); }
+.lieux-section__head { background: var(--c-navy); color: var(--c-white); text-align: center; padding: clamp(56px, 9vw, 96px) 0 clamp(110px, 14vw, 150px); }
+.lieux-section__head h2 { color: var(--c-white); max-width: 760px; margin: 0 auto 14px; text-wrap: balance; }
+.lieux-section__lead { color: rgba(255,255,255,.82); font-size: 1.05rem; max-width: 640px; margin: 0 auto; }
+.lieux-section__body { margin-top: calc(-1 * clamp(70px, 10vw, 100px)); padding-bottom: clamp(56px, 9vw, 96px); }
+.lieux-cartes { display: grid; gap: 16px; }
+@media (min-width: 760px) { .lieux-cartes { grid-template-columns: 1fr 1fr; gap: 24px; } }
+.lieu-carte { display: flex; flex-direction: column; align-items: flex-start; background: var(--c-white); border-radius: calc(var(--radius) + 4px); box-shadow: var(--shadow-lg); padding: 28px 24px 24px; }
+.lieu-carte__icone { width: 56px; height: 56px; border-radius: 16px; background: var(--c-navy); color: var(--c-yellow); display: grid; place-items: center; margin-bottom: 16px; }
+.lieu-carte__icone svg { width: 30px; height: 30px; }
+.lieu-carte h3 { font-size: 1.4rem; margin: 0 0 6px; color: var(--c-navy); }
+.lieu-carte__texte { color: var(--c-muted); margin: 0 0 18px; }
+.lieu-carte__etiquette { margin: 0 0 8px; font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--c-blue); }
+.lieu-carte__villes { list-style: none; padding: 0; margin: 0 0 24px; display: flex; flex-wrap: wrap; gap: 8px; }
+.lieu-carte__villes li { background: var(--c-tint); color: var(--c-navy); font-weight: 600; padding: 6px 14px; border-radius: 999px; font-size: .94rem; }
+.lieu-carte__btn { margin-top: auto; width: 100%; }
+.lieux-section__note { margin: 24px 0 0; text-align: center; color: var(--c-muted); font-size: .94rem; }
+.lieux-section__note a { color: var(--c-blue); font-weight: 700; text-decoration: none; }

@@ -213,7 +213,7 @@
         f.accroche ? el("p", { class: "formula__pitch", text: f.accroche }) : null,
         el("ul", { class: "formula__list" }, (f.inclus || []).map(function (i) { return el("li", null, [el("span", { class: "check", "aria-hidden": "true" }), i]); })),
         prixParVehicule(f),
-        el("a", { class: "btn " + (f.miseEnAvant ? "btn--accent" : "btn--primary"), href: "#reserver", "data-formule": f.id, text: "Choisir cette formule" }),
+        el("a", { class: "btn " + (f.miseEnAvant ? "btn--accent" : "btn--primary"), href: "#choix-lieu", "data-formule": f.id, text: "Choisir cette formule" }),
       ]));
     });
     var opt = $("[data-options]");
