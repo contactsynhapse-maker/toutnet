@@ -58,20 +58,18 @@ var REGLAGES_DEFAUT = [
 ];
 
 // Doivent correspondre aux identifiants `id` de js/config.js du site.
-var VEHICULES = [["citadine", "Citadine"], ["break-suv", "Break · SUV"], ["7-places", "7 places (van)"], ["camion", "Camion"], ["utilitaire", "Utilitaire"], ["commercial", "Voiture commerciale"]];
-var FORMULES = [["formule-1", "Formule 1 — Aspiration à sec"], ["formule-2", "Formule 2 — Nettoyage complet par extraction"]];
-var OPTIONS = [["vehicule-tres-sale", "Véhicule très sale"], ["poils-animaux", "Poils d'animaux"]];
-// Durées de départ (minutes), d'après Quentin : citadine et break/SUV 2 h (formule 1)
-// et 3 h (formule 2), utilitaire 3 h minimum, voiture commerciale 1 h 30 à 2 h.
-// Les lignes « À CONFIRMER » sont provisoires.
+var VEHICULES = [["citadine", "Citadine"], ["break-suv", "SUV"], ["berline", "Berline"], ["7-places", "7 places (van)"], ["commercial", "Voiture commerciale"]];
+var FORMULES = [["formule-1", "Le compromis"], ["formule-2", "Nettoyage intérieur complet"]];
+var OPTIONS = [["vehicule-tres-sale", "Véhicule très sale"], ["poils-animaux", "Beaucoup de poils d'animaux"]];
+// Durées de départ (minutes), d'après Quentin (26/11/2026) : « Le compromis »
+// environ 1 h 30, « Nettoyage intérieur complet » environ 2 h 30.
 // Ajustables ensuite dans l'onglet « Durées », sans toucher au code.
 var DUREES_DEFAUT = {
-  "citadine|formule-1": 120, "citadine|formule-2": 180,
-  "break-suv|formule-1": 120, "break-suv|formule-2": 180,
-  "7-places|formule-1": 120, "7-places|formule-2": 180,       // À CONFIRMER
-  "camion|formule-1": 180, "camion|formule-2": 180,           // À CONFIRMER
-  "utilitaire|formule-1": 180, "utilitaire|formule-2": 180,
-  "commercial|formule-1": 90, "commercial|formule-2": 120,
+  "citadine|formule-1": 90, "citadine|formule-2": 150,
+  "break-suv|formule-1": 90, "break-suv|formule-2": 150,
+  "berline|formule-1": 90, "berline|formule-2": 150,
+  "7-places|formule-1": 90, "7-places|formule-2": 150,
+  "commercial|formule-1": 90, "commercial|formule-2": 150,
   "option|vehicule-tres-sale": 30,
   "option|poils-animaux": 0,                                   // À CONFIRMER
 };

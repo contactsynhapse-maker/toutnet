@@ -218,7 +218,7 @@ button, input, textarea { font: inherit; }
 .formula--featured .formula__prices strong { color: var(--c-yellow); font-size: 1rem; }
 .formula--featured .formula__pitch { color: var(--c-white); background: rgba(255,255,255,.1); border-left: 3px solid var(--c-yellow); padding: 10px 14px; border-radius: 0 10px 10px 0; }
 @media (min-width: 761px) {
-  .formulas { grid-template-columns: 1fr 1.15fr; align-items: center; }
+  .formulas { grid-template-columns: 1.15fr 1fr; align-items: center; }
   .formula--featured { padding: 40px 34px 34px; transform: translateY(-4px); }
 }
 @media (max-width: 760px) { .formula--featured { order: -1; } }
@@ -581,3 +581,29 @@ button, input, textarea { font: inherit; }
 .formulas:has(> .formula:only-child) .formula--featured { transform: none; }
 .estimate__devis { margin: 6px 0 0; font-size: .86rem; color: rgba(255,255,255,.75); }
 @media (max-width: 520px) { .formula__prices { grid-template-columns: 1fr; gap: 8px; } .formula__prices li { align-items: baseline; } }
+
+/* ---------- Réservation : choix de la formule (deux colonnes) ---------- */
+.fchoices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fchoice { position: relative; display: block; cursor: pointer; }
+.fchoice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.fchoice__box {
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; height: 100%;
+  background: var(--c-white); border: 2px solid var(--c-line); border-radius: var(--radius); padding: 16px 14px 14px;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+}
+.fchoice:hover .fchoice__box { border-color: #b3c0d9; }
+.fchoice input:focus-visible + .fchoice__box { box-shadow: 0 0 0 3px rgba(29, 79, 158, .35); }
+.fchoice--premium .fchoice__box { border-color: var(--c-yellow); }
+.fchoice__badge { background: var(--c-yellow); color: var(--c-navy); font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; }
+.fchoice__nom { font-weight: 800; font-size: 1.02rem; line-height: 1.25; padding-right: 26px; }
+.fchoice__duree { color: var(--c-muted); font-size: .84rem; }
+.fchoice__prix { margin-top: auto; padding-top: 8px; display: flex; flex-direction: column; line-height: 1.15; }
+.fchoice__prix small { color: var(--c-muted); font-size: .76rem; }
+.fchoice__prix strong { color: var(--c-blue); font-size: 1.35rem; font-weight: 800; }
+.fchoice__check { position: absolute; top: 12px; right: 12px; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--c-line); display: grid; place-items: center; color: transparent; }
+.fchoice__check svg { width: 13px; height: 13px; }
+.fchoice input:checked + .fchoice__box { border-color: var(--c-navy); background: var(--c-navy); color: var(--c-white); box-shadow: var(--shadow); }
+.fchoice input:checked + .fchoice__box .fchoice__duree,
+.fchoice input:checked + .fchoice__box .fchoice__prix small { color: rgba(255,255,255,.75); }
+.fchoice input:checked + .fchoice__box .fchoice__prix strong { color: var(--c-yellow); }
+.fchoice input:checked + .fchoice__box .fchoice__check { background: var(--c-yellow); border-color: var(--c-yellow); color: var(--c-navy); }

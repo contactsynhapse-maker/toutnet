@@ -63,7 +63,7 @@ window.SITE_CONFIG = {
      ------------------------------------------------------------------ */
   avantages: [
     { icone: "mobile",     titre: "À domicile ou à l'atelier", texte: "Chez vous, sur votre lieu de travail ou à l'atelier de Lavaur : vous choisissez." },
-    { icone: "formules",   titre: "Nettoyage complet",    texte: "Aspiration, plastiques, vitres et shampouinage des sièges par extraction." },
+    { icone: "formules",   titre: "Deux formules",        texte: "Le compromis, léger et abordable, ou le nettoyage intérieur complet, en profondeur." },
     { icone: "remise",     titre: "Tarifs dégressifs",    texte: "−10 % de 2 à 4 véhicules, −15 % à partir de 5." },
     { icone: "calendrier", titre: "Réservation en ligne", texte: "Composez votre formule et choisissez votre créneau en quelques clics." },
   ],
@@ -72,30 +72,34 @@ window.SITE_CONFIG = {
      TYPES DE VÉHICULES & PRIX (nets, TVA non applicable)
      prixMin / prixMax : fourchette affichée dans « Tarifs » (flyer).
      image : photo affichée sous le nom (assets/vehicules/…), facultative.
-     prix : prix de la prestation pour ce véhicule (clé "formule-2",
-            seule prestation proposée depuis le 26/11/2026). Les options
-            s'ajoutent ensuite.
+     prix : prix de chaque formule pour ce véhicule. formule-1 (Le compromis)
+            = bas de la fourchette, formule-2 (Nettoyage intérieur complet)
+            = haut. Les options s'ajoutent ensuite.
      devis: true : pas de prix affiché, « Prix sur devis ».
      ------------------------------------------------------------------ */
   vehicules: [
-    { id: "citadine",   nom: "Citadine",            image: "assets/vehicules/citadine.jpg",  prixMin: 125, prixMax: 125, prix: { "formule-2": 125 } },
-    { id: "break-suv",  nom: "Berline · SUV",       image: "assets/vehicules/break-suv.jpg", prixMin: 140, prixMax: 140, prix: { "formule-2": 140 } },
-    { id: "7-places",   nom: "7 places (van)",      image: "assets/vehicules/7-places.jpg",  prixMin: 155, prixMax: 155, prix: { "formule-2": 155 } },
+    { id: "citadine",   nom: "Citadine",            image: "assets/vehicules/citadine.jpg",  prixMin: 80,  prixMax: 125, prix: { "formule-1": 80,  "formule-2": 125 } },
+    { id: "break-suv",  nom: "SUV",                 image: "assets/vehicules/break-suv.jpg", prixMin: 90,  prixMax: 140, prix: { "formule-1": 90,  "formule-2": 140 }, note: "Ex. 3008, Tiguan, Sportage" },
+    { id: "berline",    nom: "Berline",             image: "",                               prixMin: 100, prixMax: 140, prix: { "formule-1": 100, "formule-2": 140 }, note: "Ex. 308, Golf, 330d" },   // À CONFIRMER — prix « Nettoyage intérieur complet » repris de l'ancien « Berline · SUV » ; photo à fournir
+    { id: "7-places",   nom: "7 places (van)",      image: "assets/vehicules/7-places.jpg",  prixMin: 110, prixMax: 155, prix: { "formule-1": 110, "formule-2": 155 } },
     { id: "commercial", nom: "Voiture commerciale", image: "assets/vehicules/commercial.jpg", devis: true },   // À DÉFINIR — prix
   ],
 
+
   /* ------------------------------------------------------------------
-     PRESTATION (une seule depuis le 26/11/2026, décision de Quentin)
-     L'ancienne « Formule 1 · Aspiration à sec » est retirée ; son contenu
-     est inclus dans la prestation ci-dessous.
+     FORMULES (deux, dans l'ordre d'affichage)
+     formule-2 = « Nettoyage intérieur complet » (premium, 2 h 30)
+     formule-1 = « Le compromis » (prix d'appel, 1 h 30)
+     nomCourt : nom affiché dans les colonnes de choix de la réservation.
      ------------------------------------------------------------------ */
   formules: [
     {
       id: "formule-2",   // ne pas changer : identifiant utilisé par la réservation (onglet « Durées »)
-      etiquette: "Nettoyage intérieur",
-      nom: "Nettoyage complet par extraction",
-      sousTitre: "Pour un intérieur impeccable, en profondeur",
-      duree: "Environ 3 h",
+      etiquette: "En profondeur",
+      nom: "Nettoyage intérieur complet",
+      nomCourt: "Nettoyage intérieur",
+      sousTitre: "Le meilleur nettoyage, qui redonne vie à votre véhicule",
+      duree: "Environ 2 h 30",
       accroche: "La shampouineuse injecte puis aspire l'eau dans les tissus et extrait la saleté incrustée, là où un simple aspirateur ne va pas.",
       inclus: [
         "Aspiration complète de l'habitacle : sièges, tapis et moquettes",
@@ -105,9 +109,25 @@ window.SITE_CONFIG = {
         "Nettoyage des contours de portières",
         "Shampouinage des sièges par extraction",
       ],
+      badge: "Premium",
       miseEnAvant: true,
     },
+    {
+      id: "formule-1",   // ne pas changer : identifiant utilisé par la réservation (onglet « Durées »)
+      etiquette: "Plus légère · Plus abordable",
+      nom: "Le compromis",
+      nomCourt: "Le compromis",
+      sousTitre: "Un bon nettoyage, plus léger",
+      duree: "Environ 1 h 30",
+      inclus: [
+        "Aspiration de l'intérieur",
+        "Nettoyage des plastiques",
+        "Nettoyage des vitres",
+        "Lustrage des plastiques",
+      ],
+    },
   ],
+
 
   /* ------------------------------------------------------------------
      OPTIONS (cases à cocher, par véhicule)
@@ -201,12 +221,11 @@ window.SITE_CONFIG = {
     // estimée tant que le service Google n'est pas installé. Une fois
     // installé, ce sont les durées de l'onglet « Durées » qui comptent.
     durees: {
-      "citadine|formule-1": 120,   "citadine|formule-2": 180,
-      "break-suv|formule-1": 120,  "break-suv|formule-2": 180,
-      "7-places|formule-1": 120,   "7-places|formule-2": 180,   // À CONFIRMER
-      "camion|formule-1": 180,     "camion|formule-2": 180,     // À CONFIRMER
-      "utilitaire|formule-1": 180, "utilitaire|formule-2": 180,
-      "commercial|formule-1": 90,  "commercial|formule-2": 120,
+      "citadine|formule-1": 90,    "citadine|formule-2": 150,
+      "break-suv|formule-1": 90,   "break-suv|formule-2": 150,
+      "berline|formule-1": 90,     "berline|formule-2": 150,
+      "7-places|formule-1": 90,    "7-places|formule-2": 150,
+      "commercial|formule-1": 90,  "commercial|formule-2": 150,
       "option|vehicule-tres-sale": 30,   // À CONFIRMER — temps en plus si très sale
     },
   },

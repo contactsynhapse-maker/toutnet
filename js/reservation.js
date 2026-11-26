@@ -178,20 +178,33 @@
       state.vehicules.length > 1 ? el("button", { type: "button", class: "link-btn link-btn--danger", "data-remove": "" }, ["Retirer ce véhicule"]) : null,
     ]));
 
+    // 1) Formule : deux colonnes, « à partir de » tant que le véhicule n'est pas choisi
+    if (!FORMULE_UNIQUE) {
+      panelBox.appendChild(el("span", { class: "group-label", text: "Formule" }));
+      panelBox.appendChild(el("div", { class: "fchoices", "data-field": "formule" }, (C.formules || []).map(function (f) {
+        var prix = type ? Site.prixFormule(type, f.id) : null;
+        var min = Math.min.apply(null, (C.vehicules || []).map(function (t) { return Site.prixFormule(t, f.id); }).filter(function (n) { return typeof n === "number"; }));
+        return el("label", { class: "fchoice" + (f.miseEnAvant ? " fchoice--premium" : "") }, [
+          el("input", { type: "radio", name: "formule-" + v.uid, value: f.id, checked: v.formule === f.id }),
+          el("span", { class: "fchoice__box" }, [
+            f.badge ? el("span", { class: "fchoice__badge", text: f.badge }) : null,
+            el("span", { class: "fchoice__nom", text: f.nomCourt || f.nom }),
+            f.duree ? el("span", { class: "fchoice__duree", text: f.duree }) : null,
+            el("span", { class: "fchoice__prix" }, type
+              ? [el("strong", { text: euros(prix) })]
+              : [el("small", { text: "à partir de" }), el("strong", { text: euros(min) })]),
+            el("span", { class: "fchoice__check", html: Site.icons.ok, "aria-hidden": "true" }),
+          ]),
+        ]);
+      })));
+    }
+
+    // 2) Type de véhicule (prix de la formule choisie, sinon fourchette)
+    var fChoisie = byId(C.formules, v.formule);
     panelBox.appendChild(el("span", { class: "group-label", text: "Type de véhicule" }));
     panelBox.appendChild(el("div", { class: "choices", "data-field": "type" }, (C.vehicules || []).map(function (t) {
-      return choice("radio", "type-" + v.uid, t.id, v.type === t.id, t.nom, t.note || "", Site.fourchette(t.prixMin, t.prixMax), t.image);
-    })));
-
-    if (!FORMULE_UNIQUE) panelBox.appendChild(el("span", { class: "group-label" }, ["Formule ", type ? null : el("small", { text: "(choisissez d'abord le type pour voir les prix)" })]));
-    if (!FORMULE_UNIQUE) panelBox.appendChild(el("div", { class: "choices choices--2", "data-field": "formule" }, (C.formules || []).map(function (f, i) {
-      var prix = type ? euros(Site.prixFormule(type, f.id)) : "";
-      var c = choice("radio", "formule-" + v.uid, f.id, v.formule === f.id, f.nom, (f.etiquette || "") + (f.sousTitre ? " — " + f.sousTitre : "") + (f.duree ? " · " + f.duree.replace("Environ", "environ") : ""), prix);
-      if (f.miseEnAvant) {
-        c.classList.add("choice--reco");
-        c.querySelector(".choice__body").insertBefore(el("span", { class: "choice__reco", text: "★ Recommandée" }), c.querySelector(".choice__name"));
-      }
-      return c;
+      var prixT = fChoisie ? euros(Site.prixFormule(t, fChoisie.id)) : Site.fourchette(t.prixMin, t.prixMax);
+      return choice("radio", "type-" + v.uid, t.id, v.type === t.id, t.nom, t.note || "", prixT, t.image);
     })));
 
     if (NIVEAUX.length) {
@@ -324,7 +337,7 @@
     }
     v[f] = e.target.value;
     errorBox.textContent = "";
-    renderStep1(f === "type"); // le type change les prix affichés des formules
+    renderStep1(f === "type" || f === "formule"); // le type et la formule changent les prix affichés
   });
 
   // Boutons « Choisir cette formule » de la section Formules
@@ -343,7 +356,7 @@
       if (!vehiculeComplet(v)) {
         state.actif = i;
         renderStep1();
-        var manque = !v.type ? "le type de véhicule" : !v.formule ? "la formule" : "l'état du véhicule";
+        var manque = !v.formule ? "la formule" : !v.type ? "le type de véhicule" : "l'état du véhicule";
         return "Véhicule " + (i + 1) + " : choisissez " + manque + ".";
       }
     }
