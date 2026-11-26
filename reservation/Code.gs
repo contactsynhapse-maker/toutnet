@@ -100,6 +100,7 @@ function doPost(e) {
     if (data.action === "reserver") return json(reserver(data));
     if (data.action === "decider") return json(decider(data));
     if (data.action === "message") return json(envoyerMessage(data));
+    if (data.action === "devis") return json(demanderDevis(data));
     return json({ ok: false, message: "Action inconnue" });
   } catch (err) {
     console.error(err);
@@ -240,7 +241,7 @@ function reserver(d) {
 
   // --- Notifications (hors verrou)
   var resa = lireReservation(ref);
-  try { notifierQuentin(R, resa); } catch (err) { console.error("Notification Quentin : " + err); }
+  try { notifierQuentin(R, resa, piecesJointes(d.photos, resa.prenom + "-" + resa.nom)); } catch (err) { console.error("Notification Quentin : " + err); }
   try { envoyerSms(R, "Tout'Net : nouvelle demande " + resa.prenom + " " + resa.nom + " le " + dateFr(resa.date) + " à " + resa.heure + " (" + resa.ville + "). Voir vos e-mails pour accepter."); } catch (err) { console.error("SMS : " + err); }
   try { emailClient(R, resa, "recue"); } catch (err) { console.error("E-mail client : " + err); }
 
@@ -347,6 +348,65 @@ function envoyerMessage(d) {
   return { ok: true };
 }
 
+/* Photos envoyées par le site (JPEG en base64, déjà réduites) → pièces jointes.
+   6 photos au maximum, 5 Mo chacune au maximum. */
+function piecesJointes(photos, prefixe) {
+  var out = [];
+  (photos || []).slice(0, 6).forEach(function (p, i) {
+    try {
+      if (!p || !p.data || !/^image\/(jpeg|png|webp)$/.test(p.type || "")) return;
+      var octets = Utilities.base64Decode(String(p.data));
+      if (octets.length > 5 * 1024 * 1024) return;
+      var ext = p.type === "image/png" ? "png" : p.type === "image/webp" ? "webp" : "jpg";
+      out.push(Utilities.newBlob(octets, p.type, String(prefixe || "photo").replace(/[^\w-]+/g, "_") + "-" + (i + 1) + "." + ext));
+    } catch (e) { console.error("Photo " + (i + 1) + " : " + e); }
+  });
+  return out;
+}
+
+/* Demande de devis envoyée depuis le site (avec photos du véhicule) */
+function demanderDevis(d) {
+  if (d.website) return { ok: true };                                 // robot (champ piège rempli)
+  var prenom = String(d.prenom || "").trim().slice(0, 80);
+  var nom = String(d.nom || "").trim().slice(0, 80);
+  var tel = String(d.telephone || "").trim().slice(0, 30);
+  var email = String(d.email || "").trim().slice(0, 120);
+  var demande = String(d.demande || "").trim().slice(0, 3000);
+  if (!prenom) throw new Error("Prénom manquant.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) throw new Error("E-mail invalide.");
+  var photos = piecesJointes(d.photos, "devis-" + prenom + "-" + nom);
+  if (!demande && !photos.length) throw new Error("Décrivez votre demande ou ajoutez une photo.");
+
+  var R = lireReglages();
+  var nomEnt = R.nom_entreprise || "Tout'Net";
+  var to = R.email_notification || Session.getEffectiveUser().getEmail();
+  var ligne = function (k, v) { return v ? '<tr><td style="padding:6px 12px 6px 0;color:#5b6b8c;vertical-align:top">' + k + '</td><td style="padding:6px 0;font-weight:600">' + v + "</td></tr>" : ""; };
+  var html = gabarit("Nouvelle demande de devis",
+    "<p><strong>" + esc(prenom + " " + nom) + "</strong> demande un devis depuis le site :</p>" +
+    '<table style="border-collapse:collapse;font-size:15px">' +
+      ligne("Véhicule", esc(d.vehicule || "")) +
+      ligne("Formule souhaitée", esc(d.formule || "")) +
+      ligne("Téléphone", tel ? '<a href="tel:' + esc(tel.replace(/\s/g, "")) + '">' + esc(tel) + "</a>" : "") +
+      ligne("E-mail", esc(email)) +
+    "</table>" +
+    (demande ? '<div style="margin:14px 0;padding:14px 16px;background:#eef4fe;border-radius:10px;white-space:pre-line">' + esc(demande) + "</div>" : "") +
+    "<p><strong>" + (photos.length ? "📷 " + photos.length + " photo" + (photos.length > 1 ? "s" : "") + " en pièce" + (photos.length > 1 ? "s" : "") + " jointe" + (photos.length > 1 ? "s" : "") + "." : "Aucune photo jointe.") + "</strong></p>" +
+    '<p style="color:#5b6b8c;font-size:13px">Répondez à cet e-mail pour envoyer directement votre prix et la durée au client.</p>');
+  var opts = { to: to, subject: "📷 Demande de devis — " + prenom + " " + nom + " — " + (d.vehicule || ""), htmlBody: html, name: nomEnt, replyTo: email };
+  if (photos.length) opts.attachments = photos;
+  MailApp.sendEmail(opts);
+
+  try {
+    var contact = R.telephone_entreprise ? " ou appelez-nous au " + esc(R.telephone_entreprise) : "";
+    MailApp.sendEmail({ to: email, subject: nomEnt + " — Votre demande de devis a bien été reçue", name: nomEnt, replyTo: to,
+      htmlBody: gabarit("Votre demande de devis a bien été reçue",
+        "<p>Bonjour " + esc(prenom) + ",</p><p>Merci pour votre demande" + (photos.length ? " et vos photos" : "") + ". Quentin l'étudie et vous répond avec un prix et une durée d'intervention.</p>" +
+        "<p>Une précision à ajouter ? Répondez simplement à cet e-mail" + contact + ".</p><p>L'équipe " + esc(nomEnt) + "</p>") });
+  } catch (err) { console.error("E-mail client (devis) : " + err); }
+  try { envoyerSms(R, "Tout'Net : demande de devis de " + prenom + " (" + (d.vehicule || "") + "). Voir vos e-mails."); } catch (e) {}
+  return { ok: true };
+}
+
 /* Menu dans la feuille : accepter / refuser la ligne sélectionnée */
 function onOpen() {
   SpreadsheetApp.getUi().createMenu("Tout'Net")
@@ -374,16 +434,19 @@ function menuDecision(choix) {
 /* =====================================================================
    NOTIFICATIONS
    ===================================================================== */
-function notifierQuentin(R, resa) {
+function notifierQuentin(R, resa, photos) {
   var to = R.email_notification || Session.getEffectiveUser().getEmail();
   var html = gabarit("Nouvelle demande de réservation",
     "<p><strong>" + esc(resa.prenom + " " + resa.nom) + "</strong> souhaite un rendez-vous :</p>" + blocResa(resa, true) +
     '<p style="margin:26px 0 8px">' +
       '<a href="' + esc(urlDecision(resa, "accepter")) + '" style="' + styleBouton("#12a150") + '">✅ Accepter</a> &nbsp; ' +
       '<a href="' + esc(urlDecision(resa, "refuser")) + '" style="' + styleBouton("#d92d20") + '">❌ Refuser</a></p>' +
+    (photos && photos.length ? '<p><strong>📷 ' + photos.length + " photo" + (photos.length > 1 ? "s" : "") + " du véhicule en pièce" + (photos.length > 1 ? "s" : "") + " jointe" + (photos.length > 1 ? "s" : "") + ".</strong></p>" : "") +
     '<p style="color:#5b6b8c;font-size:13px">Le créneau est bloqué dans votre agenda (en jaune) en attendant votre réponse. Répondez à cet e-mail pour écrire directement au client.</p>');
-  MailApp.sendEmail({ to: to, subject: "🧽 Nouvelle demande — " + resa.prenom + " " + resa.nom + " — " + dateFr(resa.date) + " " + resa.heure,
-    htmlBody: html, name: R.nom_entreprise || "Tout'Net", replyTo: resa.email });
+  var opts = { to: to, subject: "🧽 Nouvelle demande — " + resa.prenom + " " + resa.nom + " — " + dateFr(resa.date) + " " + resa.heure,
+    htmlBody: html, name: R.nom_entreprise || "Tout'Net", replyTo: resa.email };
+  if (photos && photos.length) opts.attachments = photos;
+  MailApp.sendEmail(opts);
 }
 
 function emailClient(R, resa, type, message) {

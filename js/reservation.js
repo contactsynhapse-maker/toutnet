@@ -217,6 +217,17 @@
       return choice("radio", "type-" + v.uid, t.id, v.type === t.id, t.nom, t.note || "", prixT, t.image);
     })));
 
+    // Véhicule sur devis : encadré « Demandez votre devis » (photos envoyées à Quentin)
+    if (type && type.devis) {
+      panelBox.appendChild(el("div", { class: "devis-encart" }, [
+        el("div", null, [
+          el("strong", { text: "Prix sur devis" }),
+          el("span", { text: "Envoyez à Quentin des photos de l'état du véhicule et ce que vous souhaitez : il vous répond avec un prix et une durée. Vous pouvez aussi continuer pour réserver un créneau." }),
+        ]),
+        el("button", { type: "button", class: "btn btn--accent", "data-devis": "", "data-devis-vehicule": type.id, "data-devis-formule": v.formule || "" }, ["Demandez votre devis"]),
+      ]));
+    }
+
     if (NIVEAUX.length) {
       panelBox.appendChild(el("span", { class: "group-label", text: "État du véhicule" }));
       panelBox.appendChild(el("div", { class: "choices", "data-field": "niveau" }, NIVEAUX.map(function (n) {
@@ -663,6 +674,16 @@
   /* =================================================================
      ÉTAPE 3 — COORDONNÉES
      ================================================================= */
+  // Photos du véhicule à l'étape « Coordonnées », pour les véhicules sur devis
+  var photosResaBox = $("[data-photos-resa]"), photosResa = null;
+  function aDesDevis() { return state.vehicules.some(function (v) { var t = byId(C.vehicules, v.type); return t && t.devis; }); }
+  function renderPhotosResa() {
+    photosResaBox.hidden = !aDesDevis() || !Site.photoPicker;
+    if (photosResaBox.hidden || photosResa) return;
+    photosResa = Site.photoPicker({ titre: "Photos de l'état du véhicule ", aide: "Pour un véhicule sur devis, ajoutez quelques photos (sièges, tapis, coffre…) : Quentin pourra estimer le prix et la durée. Elles lui sont envoyées avec votre demande." });
+    photosResaBox.appendChild(photosResa.el);
+  }
+
   function validerStep3() {
     var bad = [];
     if (!val("prenom")) bad.push("prenom");
@@ -701,6 +722,7 @@
       el("p", { text: val("prenom") + " " + val("nom") }),
       el("p", { text: val("telephone") + " · " + val("email") }),
       val("remarques") ? el("p", { style: "color:var(--c-muted)", text: val("remarques") }) : null,
+      aDesDevis() && photosResa && photosResa.nombre() ? el("p", { text: photosResa.nombre() + " photo" + (photosResa.nombre() > 1 ? "s" : "") + " du véhicule jointe" + (photosResa.nombre() > 1 ? "s" : "") }) : null,
     ]));
 
     submitBox.textContent = "";
@@ -762,6 +784,7 @@
       estimation: { prix: e.total, pack: e.pack ? e.pack.nom + " −" + e.pack.remise + " %" : "",
         texte: Site.prixTexte(e) + (e.pack ? " (pack " + e.pack.nom + " −" + e.pack.remise + " % inclus)" : "") },
       website: val("website"),
+      photos: aDesDevis() && photosResa ? photosResa.liste() : [],
       conditionsAcceptees: true,
     };
 
@@ -825,6 +848,7 @@
   function reinitialiser() {
     state.vehicules = [nouveauVehicule()];
     state.actif = 0; state.jour = null; state.heure = null; state.lieu = null;
+    if (photosResa) photosResa.vider();
     state.dispo = { cle: null, loading: false, erreur: false, data: null };
     form.reset();
     goTo(1, { noScroll: true });
@@ -850,6 +874,7 @@
 
     if (step === 1) { renderLieux(); renderStep1(); }
     if (step === 2) { renderAtelierInfo(); chargerDispos(); }
+    if (step === 3) renderPhotosResa();
     if (step === 4) renderRecap();
 
     if (!opts || !opts.noScroll) {

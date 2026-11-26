@@ -236,7 +236,9 @@
     (C.vehicules || []).forEach(function (v) {
       table.appendChild(el("div", { class: "price-row" }, [
         el("span", { class: "price-row__name" }, [v.nom, v.note ? el("small", { text: v.note }) : null]),
-        el("span", { class: "price-row__price", text: fourchette(v.prixMin, v.prixMax) }),
+        v.devis
+          ? el("span", { class: "price-row__price price-row__price--devis" }, ["Sur devis", el("button", { type: "button", class: "link-btn", "data-devis": "", "data-devis-vehicule": v.id }, ["Demander un devis"])])
+          : el("span", { class: "price-row__price", text: fourchette(v.prixMin, v.prixMax) }),
       ]));
     });
     var packs = $("[data-packs]");

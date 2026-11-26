@@ -601,7 +601,7 @@ button, input, textarea { font: inherit; }
 .fchoice:hover .fchoice__box { border-color: #b3c0d9; }
 .fchoice input:focus-visible + .fchoice__box { box-shadow: 0 0 0 3px rgba(29, 79, 158, .35); }
 .fchoice--premium .fchoice__box { border-color: var(--c-yellow); }
-.fchoice__badge { background: var(--c-yellow); color: var(--c-navy); font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; }
+.fchoice__badge { margin-right: 26px; background: var(--c-yellow); color: var(--c-navy); font-size: .6rem; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; }
 .fchoice__nom { font-weight: 800; font-size: 1.02rem; line-height: 1.25; padding-right: 26px; }
 .fchoice__duree { color: var(--c-muted); font-size: .84rem; }
 .fchoice__prix { margin-top: auto; padding-top: 8px; display: flex; flex-direction: column; line-height: 1.15; }
@@ -616,3 +616,36 @@ button, input, textarea { font: inherit; }
 .fchoice input:checked + .fchoice__box .fchoice__check { background: var(--c-yellow); border-color: var(--c-yellow); color: var(--c-navy); }
 .estimate__duree { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: -6px; color: rgba(255,255,255,.85); }
 .estimate__duree strong { color: var(--c-white); font-size: 1.15rem; }
+
+/* ---------- Devis : encart, photos, fenêtre ---------- */
+.devis-encart { margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; background: var(--c-tint); border: 2px solid var(--c-yellow); border-radius: var(--radius-sm); padding: 16px; }
+.devis-encart > div { flex: 1 1 260px; display: grid; gap: 4px; }
+.devis-encart strong { color: var(--c-navy); }
+.devis-encart span { color: var(--c-muted); font-size: .9rem; line-height: 1.5; }
+@media (max-width: 520px) { .devis-encart .btn { width: 100%; } }
+.price-row__price--devis { display: grid; justify-items: end; gap: 2px; }
+.price-row__price--devis .link-btn { font-size: .82rem; }
+
+.photos { margin-top: 18px; display: grid; gap: 10px; }
+.photos__titre { font-weight: 600; font-size: .92rem; }
+.photos__titre small { font-weight: 400; color: var(--c-muted); }
+.photos__aide { margin: -4px 0 0; color: var(--c-muted); font-size: .86rem; line-height: 1.45; }
+.photos__input { display: none; }
+.photos__liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+.photos__liste:empty { display: none; }
+.photos__item { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: var(--c-tint); }
+.photos__item img { width: 100%; height: 100%; object-fit: cover; }
+.photos__suppr { position: absolute; top: 4px; right: 4px; width: 26px; height: 26px; border-radius: 50%; border: 0; background: rgba(11, 29, 64, .8); color: #fff; font-size: 18px; line-height: 1; cursor: pointer; }
+.photos__ajout { justify-self: start; }
+.photos__info { margin: 0; color: var(--c-muted); font-size: .84rem; }
+.photos__info:empty { display: none; }
+
+.devis__inner { position: relative; }
+.devis__fermer { position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--c-tint); color: var(--c-navy); font-size: 26px; line-height: 1; cursor: pointer; }
+.devis__corps h2 { font-size: clamp(1.4rem, 5vw, 1.9rem); padding-right: 40px; }
+.devis__intro { color: var(--c-muted); }
+.devis__form .btn--block { margin-top: 6px; }
+.devis__mail { margin: 14px 0 0; color: var(--c-muted); font-size: .86rem; text-align: center; }
+.devis__mail a { color: var(--c-blue); font-weight: 600; }
+.devis .done__icon { margin: 0 auto 12px; }
+.devis .field select { width: 100%; }

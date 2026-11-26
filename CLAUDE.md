@@ -60,6 +60,8 @@ js/main.js             affichage des sections à partir de config.js, estimation
 js/reservation.js      parcours de réservation (véhicules → adresse + créneau →
                        coordonnées → récapitulatif → « Valider ma demande »)
 js/lieux.js            section « Chez vous ou à l'atelier » (cartes Domicile / Atelier)
+js/devis.js            fenêtre « Demandez votre devis » + sélecteur de photos (réduites en JPEG
+                       dans le navigateur, 6 max) ; tout bouton [data-devis] l'ouvre
 decision.html          page privée de Quentin pour Accepter / Refuser une demande
                        (ouverte depuis l'email ; exclue des moteurs via robots.txt)
 mentions-legales.html  mentions légales + confidentialité + conditions de réservation
@@ -90,7 +92,7 @@ sitemap.xml, robots.txt, CNAME
   | 7 places (`7-places`) | 110 € | 165 € |
   | Voiture commerciale (`commercial`) | sur devis | sur devis |
 
-  Camion et Utilitaire ont été retirés le 26/11/2026. `berline` est un nouvel id (27/11/2026) : il faut les lignes `berline|formule-1` et `berline|formule-2` dans l'onglet « Durées » de la feuille Google, sinon la réservation d'une berline échoue (« Durée inconnue »). La berline n'a pas encore de photo.
+  Camion et Utilitaire ont été retirés le 26/11/2026. `berline` est un nouvel id (27/11/2026) : il faut les lignes `berline|formule-1` et `berline|formule-2` dans l'onglet « Durées » de la feuille Google, sinon la réservation d'une berline échoue (« Durée inconnue »). La berline n'a pas encore de photo (Quentin veut une Peugeot 308 ; impossible à télécharger depuis la session, à demander à Quentin).
 
 - `formules` : deux formules, affichées dans cet ordre (27/11/2026 : compromis à gauche, complet à droite, **même taille** ; le complet reste en bleu avec le badge « Recommandée »).
   - `formule-1` **Le compromis** (prix d'appel), environ **1 h 30** : aspiration de l'intérieur, nettoyage des plastiques, nettoyage des vitres, lustrage des plastiques. À ne pas présenter comme un mauvais choix.
@@ -99,7 +101,7 @@ sitemap.xml, robots.txt, CNAME
   Dans la réservation, après « domicile / atelier », le client voit les deux formules en **deux colonnes** (« à partir de » le prix citadine), puis le type de véhicule, puis les options. Champs : `etiquette`, `nom`, `nomCourt` (colonnes de la réservation), `sousTitre`, `duree`, `accroche`, `inclus`, `badge`, `miseEnAvant`.
 - `options` : Véhicule très sale **+30 €** (ajusté sur place) et Beaucoup de poils d'animaux **+20 €**. Le prix des options **s'ajoute** à celui de la formule (exemple affiché sur le site : SUV en nettoyage intérieur complet très sale = 149 + 30 = 179 €). **Chaque option ajoute 30 min** à la durée..
 - `packs` : remise selon le nombre de véhicules d'une même réservation. Famille −10 % de 2 à 4 véhicules, Flotte entreprise −15 % dès 5 véhicules. Avec `appliquer: true`, la remise est déduite de l'estimation.
-- `sectionLieux` : titre et intro de la section « Chez vous ou à l'atelier ». **Il n'y a plus de carte ni de « zone »** (décision de Quentin, 24/11/2026) : à domicile (déplacements Toulouse, Albi, Castres, Lavaur, Graulhet — à confirmer —, Gaillac, Lacaune ; Quentin apporte produits, machines et séchage, le client prévoit une prise électrique et un point d'eau) ou à l'atelier de Lavaur. Sous les cartes, encadré « Une question sur votre domicile ? » avec le numéro.
+- `sectionLieux` : titre et intro de la section « Chez vous ou à l'atelier ». **Il n'y a plus de carte ni de « zone »** (décision de Quentin, 24/11/2026) : à domicile (déplacements Toulouse, Albi, Castres, Lavaur, Graulhet, Gaillac, Lacaune ; Quentin apporte produits, machines et séchage, le client prévoit une prise électrique et un point d'eau) ou à l'atelier de Lavaur. Sous les cartes, encadré « Une question sur votre domicile ? » avec le numéro.
 - `galerie` : photos avant/après, avec `titre`, `description` (phrase affichée sous le titre), `avant` et `apres`.
   - Les deux photos d'une paire doivent avoir **le même cadrage et les mêmes dimensions**, sinon le curseur décale l'image.
   - Format JPG, 1200–1600 px de large, moins de 500 Ko environ.
@@ -117,6 +119,7 @@ Le serveur tourne sur le **compte Google de Tout'Net** (tout.net81@gmail.com), a
   - Si Quentin dit « mes dispos n'apparaissent pas », vérifie d'abord ce point. Rappelle aussi le délai minimum de 24 h avant un rendez-vous et l'horizon de 45 jours (onglet « Réglages »).
 - **Rendez-vous** : chaque demande crée un événement « ⏳ À CONFIRMER » dans l'agenda **« Tout'Net — Rendez-vous »** et une ligne dans la feuille Google Sheets **« Tout'Net — Réservations »**. Quentin reçoit un email avec **Accepter / Refuser**. Ces boutons ouvrent `decision.html`, où il peut ajouter un message personnel au client. Le client reçoit un email à chaque étape.
 - **Estimation affichée au client** (27/11/2026) : lignes du véhicule, puis **« Montant total »** et juste dessous **« Durée estimée »** (formule : 1 h 30 ou 2 h 30, + 30 min par option). Cette durée affichée vient de `reservation.durees` dans `config.js` ; le calcul des créneaux, lui, utilise l'onglet « Durées » de la feuille Google : les deux doivent rester identiques.
+- **Devis avec photos** (27/11/2026) : pour un véhicule `devis: true` (voiture commerciale), la réservation affiche un encart « Demandez votre devis » ; le tableau Tarifs a un lien « Demander un devis ». La fenêtre envoie au serveur l'action `devis` (prénom, nom, téléphone, e-mail, véhicule, formule souhaitée, demande, photos en base64) : `demanderDevis()` dans `Code.gs` envoie à Quentin un e-mail avec les photos en pièces jointes (réponse directe au client) et un accusé de réception au client. À l'étape « Coordonnées » d'une réservation contenant un véhicule sur devis, le client peut aussi joindre des photos, ajoutées à l'e-mail « Nouvelle demande ». **Nécessite le redéploiement de `Code.gs`** ; avant cela, le site affiche un message de secours (téléphone + lien e-mail).
 - **Réglages sans toucher au code** : dans la feuille Google, l'onglet **« Réglages »** contient le battement, la marge de trajet, le pas des créneaux, le délai minimum, l'horizon et l'email de notification. L'onglet **« Durées »** contient la durée de chaque véhicule × formule et des options. **Une fois le serveur installé, ce sont les durées de l'onglet « Durées » qui comptent**, pas celles de `config.js`.
 - **Changer un prix ou un texte** : uniquement `js/config.js`. Le serveur ne calcule pas les prix : il reçoit l'estimation affichée au client.
 - **Ajouter un type de véhicule, une formule ou une option** : il faut modifier trois endroits.

@@ -196,7 +196,7 @@ window.SITE_CONFIG = {
           "Il apporte ses produits, ses machines et son matériel de séchage : tout comme à l'atelier.",
           "Il vous suffit de prévoir une prise électrique et un point d'eau.",
         ],
-        etiquetteVilles: "Déplacements", villes: ["Toulouse", "Albi", "Castres", "Lavaur", "Graulhet", "Gaillac", "Lacaune"],   // Graulhet : À CONFIRMER (« Croyé » dans la demande de Quentin)
+        etiquetteVilles: "Déplacements", villes: ["Toulouse", "Albi", "Castres", "Lavaur", "Graulhet", "Gaillac", "Lacaune"],
         bouton: "Réserver à domicile" },
       { id: "atelier", icone: "atelier", nom: "À l'atelier",
         description: "Vous amenez votre véhicule à l'atelier Tout'Net, à Lavaur.",
