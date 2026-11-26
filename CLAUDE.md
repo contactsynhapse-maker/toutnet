@@ -40,6 +40,9 @@ Ce fichier est destiné à Claude. Il résume tout ce qu'il faut savoir pour fai
 
   Dans tous les cas, dis-lui clairement si c'est en ligne ou pas encore.
 - **24/11/2026 : Quentin a autorisé la mise en ligne directe sur `main`** pour vérifier chaque modification en temps réel.
+- **Sauvegardes** : quand Quentin demande d'« enregistrer le site », crée une branche `sauvegarde-AAAA-MM-JJ` à partir de `main` (l'envoi d'étiquettes Git est bloqué depuis les sessions). Pour revenir à une sauvegarde, remets son contenu sur `main` après accord de Quentin. Sauvegardes existantes :
+  - `sauvegarde-2026-11-24` : site d'origine (couleurs vives, carte de zone) ;
+  - `sauvegarde-2026-11-26` : couleurs « bleu nuit / jaune mat », section « Chez vous ou à l'atelier », choix du lieu au début de la réservation.
 - Après publication, invite Quentin à recharger la page sur son téléphone. Si l'ancienne version reste affichée, c'est le cache : tirer vers le bas pour recharger, ou attendre une minute.
 
 ## 4. Organisation des fichiers
@@ -166,6 +169,6 @@ Si une modification touche aux conditions (annulation, paiement, prix…), mets 
 ## 10. Problèmes déjà rencontrés (pour ne pas les refaire)
 
 - L'attribut `hidden` est forcé par `[hidden]{display:none!important}` dans le CSS, parce que `.btn` le surchargeait. Ne retire pas cette règle.
-- La carte de zone (Leaflet) a été retirée le 24/11/2026. L'ancienne version complète du site est conservée sur la branche `sauvegarde-2026-11-24`.
+- La carte de zone (Leaflet) a été retirée le 24/11/2026.
 - Les photos de véhicules ont un fond blanc et une ombre au sol douce et fondue. Une nouvelle photo doit être retouchée de la même façon pour rester homogène.
 - Google refuse les photos HEIC pour la fiche Business : il faut les convertir en JPG.
