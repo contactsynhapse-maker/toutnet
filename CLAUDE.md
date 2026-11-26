@@ -43,6 +43,7 @@ Ce fichier est destiné à Claude. Il résume tout ce qu'il faut savoir pour fai
 - **Sauvegardes** : quand Quentin demande d'« enregistrer le site », crée une branche `sauvegarde-AAAA-MM-JJ` à partir de `main` (l'envoi d'étiquettes Git est bloqué depuis les sessions). Pour revenir à une sauvegarde, remets son contenu sur `main` après accord de Quentin. Sauvegardes existantes :
   - `sauvegarde-2026-11-24` : site d'origine (couleurs vives, carte de zone) ;
   - `sauvegarde-2026-11-26` : couleurs « bleu nuit / jaune mat », section « Chez vous ou à l'atelier », choix du lieu au début de la réservation.
+- **Cache des téléphones** : les fichiers CSS et JS sont appelés avec un numéro de version (`style.css?v=20261126-2`, dans `index.html`, `mentions-legales.html`, `decision.html`). **À chaque modification d'un fichier CSS ou JS, augmente ce numéro dans les trois pages**, sinon les téléphones (surtout le navigateur d'Instagram) gardent l'ancienne version. Pour une image remplacée sous le même nom, ajoute aussi `?v=N` à son chemin dans `config.js`.
 - Après publication, invite Quentin à recharger la page sur son téléphone. Si l'ancienne version reste affichée, c'est le cache : tirer vers le bas pour recharger, ou attendre une minute.
 
 ## 4. Organisation des fichiers
@@ -92,7 +93,7 @@ sitemap.xml, robots.txt, CNAME
   | 7 places (`7-places`) | 110 € | 165 € |
   | Voiture commerciale (`commercial`) | sur devis (« autour de 110 €, selon l'état du véhicule ») | sur devis |
 
-  Camion et Utilitaire ont été retirés le 26/11/2026. `berline` est un nouvel id (27/11/2026) ; Quentin a ajouté ses lignes dans l'onglet « Durées » et mis toutes les durées à jour (formule-1 = 90, formule-2 = 150, options = 30) le 27/11/2026. Photo de la berline (`assets/vehicules/berline.jpg`) fournie par Quentin le 27/11/2026, recadrée au format 640 × 280 fond blanc.
+  Camion et Utilitaire ont été retirés le 26/11/2026. `berline` est un nouvel id (27/11/2026) ; Quentin a ajouté ses lignes dans l'onglet « Durées » et mis toutes les durées à jour (formule-1 = 90, formule-2 = 150, options = 30) le 27/11/2026. Photo de la berline (`assets/vehicules/berline.jpg`, berline noire) fournie par Quentin (libre de droits selon lui), détourée avec rembg et posée sur fond blanc 640 × 280 avec une ombre douce.
 
 - `formules` : deux formules, affichées dans cet ordre (27/11/2026 : compromis à gauche, complet à droite, **même taille** ; le complet reste en bleu avec le badge « Recommandée »).
   - `formule-1` **Le compromis** (prix d'appel), environ **1 h 30** : aspiration de l'intérieur, nettoyage des plastiques, nettoyage des vitres, lustrage des plastiques. À ne pas présenter comme un mauvais choix.

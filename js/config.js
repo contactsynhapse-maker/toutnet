@@ -80,7 +80,7 @@ window.SITE_CONFIG = {
   vehicules: [
     { id: "citadine",   nom: "Citadine",            image: "assets/vehicules/citadine.jpg",  prixMin: 80,  prixMax: 125, prix: { "formule-1": 80,  "formule-2": 125 } },
     { id: "break-suv",  nom: "SUV",                 image: "assets/vehicules/break-suv.jpg", prixMin: 90,  prixMax: 149, prix: { "formule-1": 90,  "formule-2": 149 }, note: "Ex. 3008, Tiguan, Sportage" },
-    { id: "berline",    nom: "Berline",             image: "assets/vehicules/berline.jpg",                               prixMin: 100, prixMax: 139, prix: { "formule-1": 100, "formule-2": 139 }, note: "Ex. 308, Golf, 330d" },   // photo à fournir
+    { id: "berline",    nom: "Berline",             image: "assets/vehicules/berline.jpg?v=2",                             prixMin: 100, prixMax: 139, prix: { "formule-1": 100, "formule-2": 139 }, note: "Ex. 308, Golf, 330d" },
     { id: "7-places",   nom: "7 places (van)",      image: "assets/vehicules/7-places.jpg",  prixMin: 110, prixMax: 165, prix: { "formule-1": 110, "formule-2": 165 } },
     { id: "commercial", nom: "Voiture commerciale", image: "assets/vehicules/commercial.jpg", devis: true, note: "Autour de 110 €, selon l'état du véhicule" },
   ],
