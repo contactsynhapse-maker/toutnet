@@ -92,7 +92,7 @@
   }
   function adresse() { var a = champsAdresse(); return a.rue + ", " + a.cp + " " + a.ville; }
   function adresseComplete() { var a = champsAdresse(); return !!(a.rue && /^\d{5}$/.test(a.cp) && a.ville); }
-  function lieuTexte() { var a = adresseAtelier(); return a ? "À l'atelier Tout'Net · " + a.cp + " " + a.ville : adresse(); }
+  function lieuTexte() { var a = adresseAtelier(); return a ? "À l'atelier Tout'Net · " + a.rue + ", " + a.cp + " " + a.ville : adresse(); }
   function plusOuPrix(n) { return (n > 0 ? "+" : "") + euros(n); }
 
   /* =================================================================
@@ -215,7 +215,14 @@
     panelBox.appendChild(el("div", { class: "choices", "data-field": "type" }, (C.vehicules || []).map(function (t) {
       var prixT = fChoisie ? euros(Site.prixFormule(t, fChoisie.id)) : Site.fourchette(t.prixMin, t.prixMax);
       return choice("radio", "type-" + v.uid, t.id, v.type === t.id, t.nom, t.note || "", prixT, t.image);
-    })));
+    }).concat([
+      // Case « Sur devis » : demande personnalisée avec photos (ouvre la fenêtre de devis)
+      el("button", { type: "button", class: "choice-devis", "data-devis": "", "data-devis-vehicule": "autre", "data-devis-formule": v.formule || "" }, [
+        el("span", { class: "choice-devis__titre", text: "Sur devis" }),
+        el("span", { class: "choice-devis__texte", text: "Votre véhicule n'entre dans aucune catégorie, ou vous avez une demande particulière ? Envoyez vos photos : Quentin vous fait un devis." }),
+        el("span", { class: "choice-devis__lien", text: "Demander un devis →" }),
+      ]),
+    ])));
 
     // Véhicule sur devis : encadré « Demandez votre devis » (photos envoyées à Quentin)
     if (type && type.devis) {
@@ -649,7 +656,7 @@
     atelierBox.appendChild(el("span", { class: "atelier-info__icone", html: Site.icons.atelier, "aria-hidden": "true" }));
     atelierBox.appendChild(el("div", null, [
       el("strong", { text: "Prestation à l'atelier Tout'Net" }),
-      el("span", { text: a.cp + " " + a.ville }),
+      el("span", { text: a.rue + ", " + a.cp + " " + a.ville }),
       el("button", { type: "button", class: "link-btn", "data-changer-lieu": "" }, ["Changer de lieu"]),
     ]));
   }

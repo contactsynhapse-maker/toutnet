@@ -649,3 +649,13 @@ button, input, textarea { font: inherit; }
 .devis__mail a { color: var(--c-blue); font-weight: 600; }
 .devis .done__icon { margin: 0 auto 12px; }
 .devis .field select { width: 100%; }
+
+/* Case « Sur devis » dans la grille des véhicules */
+.choice-devis { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left; font: inherit; color: inherit; cursor: pointer;
+  background: var(--c-tint); border: 2px dashed var(--c-yellow); border-radius: var(--radius-sm); padding: 14px; }
+.choice-devis:hover { border-style: solid; }
+.choice-devis:focus-visible { outline: 3px solid var(--c-blue); outline-offset: 2px; }
+.choice-devis__titre { font-weight: 800; color: var(--c-navy); }
+.choice-devis__texte { color: var(--c-muted); font-size: .84rem; line-height: 1.45; }
+.choice-devis__lien { margin-top: auto; color: var(--c-blue); font-weight: 700; font-size: .88rem; }
+@media (max-width: 600px) { .choice-devis { padding: 10px; } .choice-devis__texte { font-size: .76rem; } .choice-devis__lien { font-size: .8rem; } }

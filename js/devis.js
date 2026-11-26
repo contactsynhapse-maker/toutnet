@@ -106,7 +106,8 @@
 
   function construire() {
     picker = photoPicker({ titre: "Photos de l'état du véhicule ", aide: "Sièges, tapis, coffre, taches… Prenez-les avec votre téléphone ou choisissez-les dans votre galerie.", facultatif: true });
-    var vehicules = (C.vehicules || []).map(function (v) { return el("option", { value: v.id, text: v.nom }); });
+    var vehicules = (C.vehicules || []).map(function (v) { return el("option", { value: v.id, text: v.nom }); })
+      .concat([el("option", { value: "autre", text: "Autre véhicule / demande particulière" })]);
     var formules = [el("option", { value: "", text: "Je ne sais pas encore" })].concat((C.formules || []).map(function (f) { return el("option", { value: f.id, text: f.nom }); }));
     erreurBox = el("p", { class: "booking__error", role: "alert" });
     envoiBtn = el("button", { type: "submit", class: "btn btn--accent btn--large btn--block" }, ["Envoyer ma demande de devis"]);
@@ -149,7 +150,7 @@
   function ouvrir(vehicule, formule) {
     if (overlay && envoye) { overlay.parentNode.removeChild(overlay); overlay = null; envoye = false; }
     if (!overlay) construire();
-    if (vehicule && byId(C.vehicules, vehicule)) form.elements.vehicule.value = vehicule;
+    if (vehicule && (vehicule === "autre" || byId(C.vehicules, vehicule))) form.elements.vehicule.value = vehicule;
     else { var d = (C.vehicules || []).filter(function (v) { return v.devis; })[0]; if (d) form.elements.vehicule.value = d.id; }
     if (formule !== undefined) form.elements.formule.value = byId(C.formules, formule) ? formule : "";
     erreurBox.textContent = "";
@@ -183,7 +184,7 @@
     var payload = {
       action: "devis",
       prenom: v("prenom"), nom: v("nom"), telephone: v("telephone"), email: v("email"),
-      vehicule: veh ? veh.nom : v("vehicule"), formule: f ? f.nom : "Je ne sais pas encore",
+      vehicule: veh ? veh.nom : "Autre véhicule / demande particulière", formule: f ? f.nom : "Je ne sais pas encore",
       demande: v("demande"), photos: picker.liste(), website: v("website"),
     };
     erreurBox.textContent = "";
