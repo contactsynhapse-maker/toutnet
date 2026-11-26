@@ -33,8 +33,8 @@
     if (filled(value)) { node.textContent = value; node.classList.remove("tbd", "tbd-muted"); }
     else { node.textContent = fallback || ""; if (fallback) node.classList.add("tbd", "tbd-muted"); }
   }
-  function euros(n) { return Math.round(n) + " €"; }
-  function fourchette(min, max) { return Math.round(min) === Math.round(max) ? euros(min) : Math.round(min) + " – " + euros(max); }
+  function euros(n) { return typeof n === "number" ? Math.round(n) + " €" : "Sur devis"; }
+  function fourchette(min, max) { if (typeof min !== "number") return "Sur devis"; return Math.round(min) === Math.round(max) ? euros(min) : Math.round(min) + " – " + euros(max); }
   function byId(list, id) { for (var i = 0; i < (list || []).length; i++) if (list[i].id === id) return list[i]; return null; }
 
   /* ---------- Icônes ---------- */
@@ -101,7 +101,7 @@
      Chaque ligne est détaillée pour le récapitulatif.
      Aucun frais de déplacement n'est affiché.                            */
   function prixFormule(type, formuleId) {
-    if (!type) return null;
+    if (!type || type.devis) return null;
     if (type.prix && typeof type.prix[formuleId] === "number") return type.prix[formuleId];
     return type.prixMin;
   }
@@ -110,7 +110,7 @@
     return base == null || p == null ? null : p - base;
   }
   function estimer(vehicules) {
-    var details = [], total = 0, n = 0, partiel = false;
+    var details = [], total = 0, n = 0, partiel = false, nbDevis = 0;
     vehicules.forEach(function (v, i) {
       var type = byId(C.vehicules, v.type);
       if (!type) return;
@@ -124,18 +124,22 @@
         var o = byId(C.options, id);
         if (o) lignes.push({ label: o.nom, prix: o.prix || 0, option: true });
       });
-      var sous = lignes.reduce(function (s, l) { return s + l.prix; }, 0);
-      total += sous;
-      details.push({ index: i, titre: "Véhicule " + (i + 1), type: type, formule: f, lignes: lignes, sousTotal: sous, partiel: !f });
+      var devis = typeof base !== "number";
+      var sous = devis ? null : lignes.reduce(function (s, l) { return s + l.prix; }, 0);
+      if (devis) nbDevis++; else total += sous;
+      details.push({ index: i, titre: "Véhicule " + (i + 1), type: type, formule: f, lignes: lignes, sousTotal: sous, partiel: !f && !devis, devis: devis });
     });
     var pack = null;
     (C.packs || []).forEach(function (p) {
       if (p.appliquer !== false && n >= p.min && (!p.max || n <= p.max)) pack = p;
     });
     var remise = pack ? Math.round(total * pack.remise / 100) : 0;
-    return { details: details, nb: n, sousTotal: total, pack: pack, remise: remise, total: total - remise, partiel: partiel };
+    return { details: details, nb: n, sousTotal: total, pack: pack, remise: remise, total: total - remise, partiel: partiel, devis: nbDevis };
   }
-  function prixTexte(e) { return (e.partiel ? "à partir de " : "") + euros(e.total); }
+  function prixTexte(e) {
+    if (e.devis && e.devis === e.nb) return "Sur devis";
+    return (e.partiel ? "à partir de " : "") + euros(e.total) + (e.devis ? " + devis" : "");
+  }
 
   /* ---------- Rendu des sections ---------- */
   function renderIdentity() {
@@ -153,7 +157,7 @@
     if (filled(id.logoComplet)) {
       logoBox.appendChild(el("div", { class: "hero__logo-badge" }, [el("img", { src: id.logoComplet, alt: "Logo " + (id.nom || "") })]));
     }
-    var prixMin = Math.min.apply(null, (C.vehicules || []).map(function (v) { return v.prixMin; }));
+    var prixMin = Math.min.apply(null, (C.vehicules || []).filter(function (v) { return typeof v.prixMin === "number"; }).map(function (v) { return v.prixMin; }));
     var from = $("[data-hero-prix]");
     if (isFinite(prixMin)) {
       from.appendChild(document.createTextNode("À partir de "));
@@ -198,7 +202,7 @@
   function prixParVehicule(f) {
     return el("ul", { class: "formula__prices", "aria-label": "Prix par véhicule" }, (C.vehicules || []).map(function (v) {
       var p = prixFormule(v, f.id);
-      return typeof p === "number" ? el("li", null, [el("span", { text: v.nom }), el("strong", { text: euros(p) })]) : null;
+      return typeof p === "number" || v.devis ? el("li", null, [el("span", { text: v.nom }), el("strong", { text: euros(p) })]) : null;
     }));
   }
   function renderFormules() {
@@ -213,11 +217,11 @@
         f.accroche ? el("p", { class: "formula__pitch", text: f.accroche }) : null,
         el("ul", { class: "formula__list" }, (f.inclus || []).map(function (i) { return el("li", null, [el("span", { class: "check", "aria-hidden": "true" }), i]); })),
         prixParVehicule(f),
-        el("a", { class: "btn " + (f.miseEnAvant ? "btn--accent" : "btn--primary"), href: "#choix-lieu", "data-formule": f.id, text: "Choisir cette formule" }),
+        el("a", { class: "btn " + (f.miseEnAvant ? "btn--accent" : "btn--primary"), href: "#choix-lieu", "data-formule": f.id, text: (C.formules || []).length > 1 ? "Choisir cette formule" : "Réserver" }),
       ]));
     });
     var opt = $("[data-options]");
-    if ((C.options || []).length) opt.appendChild(el("p", { class: "extras__title", text: "Options : leur prix s'ajoute à celui de la formule choisie. Par exemple, un SUV en formule 2 (140 €) très sale revient à 140 € + 20 € = 160 €." }));
+    if ((C.options || []).length) opt.appendChild(el("p", { class: "extras__title", text: "Options : leur prix s'ajoute à celui du véhicule. Par exemple, un SUV (140 €) très sale revient à 140 € + 30 € = 170 €." }));
     (C.options || []).forEach(function (o) {
       opt.appendChild(el("div", { class: "extra" }, [
         el("span", { class: "extra__price", text: o.nom + (o.prix ? " +" + euros(o.prix) : "") }),

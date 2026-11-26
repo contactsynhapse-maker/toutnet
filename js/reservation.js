@@ -36,7 +36,9 @@
 
   /* ---------- État ---------- */
   var uid = 0;
-  function nouveauVehicule() { return { uid: ++uid, type: null, formule: null, niveau: null, options: [] }; }
+  // Une seule prestation : elle est choisie d'office et la question « Formule » n'est pas posée.
+  var FORMULE_UNIQUE = (C.formules || []).length === 1 ? C.formules[0].id : null;
+  function nouveauVehicule() { return { uid: ++uid, type: null, formule: FORMULE_UNIQUE, niveau: null, options: [] }; }
   var state = {
     step: 1,
     vehicules: [nouveauVehicule()],
@@ -111,6 +113,7 @@
       });
       if (d.lignes.length > 1) ul.appendChild(el("li", { class: "is-subtotal" }, [el("span", { text: "Sous-total" }), el("span", { text: (d.partiel ? "dès " : "") + euros(d.sousTotal) })]));
       bloc.appendChild(ul);
+      if (d.devis) bloc.appendChild(el("p", { class: "estimate__devis", text: "Quentin vous indiquera le prix après votre demande." }));
       box.appendChild(bloc);
     });
     var foot = el("ul", { class: "estimate__lines estimate__foot" });
@@ -180,8 +183,8 @@
       return choice("radio", "type-" + v.uid, t.id, v.type === t.id, t.nom, t.note || "", Site.fourchette(t.prixMin, t.prixMax), t.image);
     })));
 
-    panelBox.appendChild(el("span", { class: "group-label" }, ["Formule ", type ? null : el("small", { text: "(choisissez d'abord le type pour voir les prix)" })]));
-    panelBox.appendChild(el("div", { class: "choices choices--2", "data-field": "formule" }, (C.formules || []).map(function (f, i) {
+    if (!FORMULE_UNIQUE) panelBox.appendChild(el("span", { class: "group-label" }, ["Formule ", type ? null : el("small", { text: "(choisissez d'abord le type pour voir les prix)" })]));
+    if (!FORMULE_UNIQUE) panelBox.appendChild(el("div", { class: "choices choices--2", "data-field": "formule" }, (C.formules || []).map(function (f, i) {
       var prix = type ? euros(Site.prixFormule(type, f.id)) : "";
       var c = choice("radio", "formule-" + v.uid, f.id, v.formule === f.id, f.nom, (f.etiquette || "") + (f.sousTitre ? " — " + f.sousTitre : "") + (f.duree ? " · " + f.duree.replace("Environ", "environ") : ""), prix);
       if (f.miseEnAvant) {
@@ -199,7 +202,7 @@
     }
 
     if ((C.options || []).length) {
-      panelBox.appendChild(el("span", { class: "group-label" }, ["Options ", el("small", { text: "(facultatif, s'ajoute au prix de la formule)" })]));
+      panelBox.appendChild(el("span", { class: "group-label" }, ["Options ", el("small", { text: "(facultatif, s'ajoute au prix du véhicule)" })]));
       panelBox.appendChild(el("div", { class: "choices", "data-field": "options" }, C.options.map(function (o) {
         return choice("checkbox", "options-" + v.uid, o.id, v.options.indexOf(o.id) > -1, o.nom, o.description || "", o.prix ? "+" + euros(o.prix) : "");
       })));
@@ -222,6 +225,7 @@
     var d = e.details.filter(function (x) { return x.index === state.actif; })[0];
     box.textContent = "";
     if (!d || !d.formule) { box.hidden = true; return; }
+    if (d.devis) { box.hidden = false; box.appendChild(el("span", { text: "Prix pour ce véhicule" })); box.appendChild(el("strong", { text: "Sur devis" })); return; }
     box.hidden = false;
     var calcul = d.lignes.map(function (l, i) { return (i ? "+ " : "") + euros(l.prix); }).join(" ");
     box.appendChild(el("span", { text: "Prix pour ce véhicule" }));
@@ -733,7 +737,7 @@
       client: { prenom: val("prenom"), nom: val("nom"), telephone: val("telephone"), email: val("email") },
       remarques: val("remarques"),
       estimation: { prix: e.total, pack: e.pack ? e.pack.nom + " −" + e.pack.remise + " %" : "",
-        texte: euros(e.total) + (e.pack ? " (pack " + e.pack.nom + " −" + e.pack.remise + " % inclus)" : "") },
+        texte: Site.prixTexte(e) + (e.pack ? " (pack " + e.pack.nom + " −" + e.pack.remise + " % inclus)" : "") },
       website: val("website"),
       conditionsAcceptees: true,
     };
@@ -774,7 +778,7 @@
     box.appendChild(el("ul", { class: "done__recap" }, [
       el("li", null, [el("span", { text: "Véhicule" + (e.nb > 1 ? "s" : "") }), el("strong", { text: e.details.map(function (d) { return d.type.nom + (d.formule ? " · " + d.formule.nom : ""); }).join(" / ") })]),
       el("li", null, [el("span", { text: "Lieu" }), el("strong", { text: lieuTexte() })]),
-      el("li", null, [el("span", { text: "Prix estimé" }), el("strong", { text: euros(e.total) })]),
+      el("li", null, [el("span", { text: "Prix estimé" }), el("strong", { text: Site.prixTexte(e) })]),
       res.reference ? el("li", null, [el("span", { text: "Référence" }), el("strong", { text: res.reference })]) : null,
     ]));
     if (res.demo) box.appendChild(el("p", { class: "demo-banner", text: "Aperçu : cette demande n'a pas été envoyée." }));

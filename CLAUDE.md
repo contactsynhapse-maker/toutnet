@@ -80,23 +80,19 @@ sitemap.xml, robots.txt, CNAME
 - `contact` : téléphone, WhatsApp, email, Instagram. Chaque moyen renseigné crée automatiquement un bouton dans la section Contact. Le numéro est au format international sans « + » (`33647590673`).
 - `presentation` : section « Qui suis-je ? », **masquée tant que `texte` est vide**. Elle attend un texte et une photo de Quentin.
 - `avantages` : les 4 encarts sous l'accueil.
-- `vehicules` : types de véhicules et prix. Pour chacun, `prix["formule-1"]` est le bas de la fourchette et `prix["formule-2"]` le haut ; `prixMin` / `prixMax` alimentent le tableau Tarifs. **Si tu changes un prix, mets à jour les deux endroits.**
+- `vehicules` : types de véhicules et prix. **Depuis le 26/11/2026, une seule prestation** (décision de Quentin) : chaque véhicule a un prix unique dans `prix["formule-2"]`, recopié dans `prixMin` / `prixMax` (tableau Tarifs). **Si tu changes un prix, mets à jour les trois.** `devis: true` = pas de prix, « Sur devis » partout (l'estimation affiche alors « X € + devis »).
 
-  | Véhicule (`id`) | Formule 1 | Formule 2 |
-  |---|---|---|
-  | Citadine (`citadine`) | 90 € | 130 € |
-  | Break · SUV (`break-suv`) | 90 € | 140 € |
-  | 7 places (`7-places`) | 100 € | 150 € |
-  | Camion (`camion`) | 100 € | 150 € |
-  | Utilitaire (`utilitaire`) | 100 € | 150 € |
-  | Voiture commerciale (`commercial`) | 90 € | 120 € |
+  | Véhicule (`id`) | Prix |
+  |---|---|
+  | Citadine (`citadine`) | 125 € |
+  | Berline · SUV (`break-suv`) | 140 € |
+  | 7 places (`7-places`) | 155 € |
+  | Voiture commerciale (`commercial`) | sur devis (prix à demander à Quentin) |
 
-- `formules` : les deux formules.
-  - Formule 1, **Aspiration à sec**, environ 2 h : aspiration complète, coffre, dépoussiérage de tous les plastiques, dégraissage des vitres et du pare-brise, contours de portières.
-  - Formule 2, **Nettoyage complet par extraction**, environ 3 h : tout le contenu de la formule 1, plus le shampouinage des sièges par extraction. C'est la formule **recommandée** (`miseEnAvant: true`, badge).
+  Camion et Utilitaire ont été retirés (ids `camion`, `utilitaire` encore présents dans `Code.gs`, sans effet).
 
-  Champs disponibles : `etiquette`, `nom`, `sousTitre`, `duree`, `accroche`, `inclus` (liste à puces), `badge`.
-- `options` : Véhicule très sale +20 € (ajusté sur place) et Poils d'animaux +15 €. Le prix des options **s'ajoute** à celui de la formule (exemple affiché sur le site : SUV formule 2 très sale = 140 + 20 = 160 €).
+- `formules` : **une seule entrée**, `formule-2` « Nettoyage complet par extraction », environ 3 h. Elle inclut tout l'ancien contenu de la formule 1 (aspiration, coffre, plastiques, vitres, portières) plus le shampouinage des sièges par extraction. Avec une seule formule, la réservation la choisit d'office et ne pose pas la question « Formule ». L'ancienne formule 1 « Aspiration à sec » (90 € citadine) est conservée dans la sauvegarde du 26/11.
+- `options` : Véhicule très sale **+30 €** (ajusté sur place) et Beaucoup de poils d'animaux **+20 €**. Le prix des options **s'ajoute** à celui du véhicule (exemple affiché sur le site : SUV très sale = 140 + 30 = 170 €).
 - `packs` : remise selon le nombre de véhicules d'une même réservation. Famille −10 % de 2 à 4 véhicules, Flotte entreprise −15 % dès 5 véhicules. Avec `appliquer: true`, la remise est déduite de l'estimation.
 - `sectionLieux` : titre et intro de la section « Chez vous ou à l'atelier ». **Il n'y a plus de carte ni de « zone »** (décision de Quentin, 24/11/2026) : à domicile (déplacements Toulouse, Albi, Castres, Gaillac, Lacaune) ou à l'atelier de Lavaur.
 - `galerie` : photos avant/après, avec `titre`, `description` (phrase affichée sous le titre), `avant` et `apres`.
@@ -107,7 +103,7 @@ sitemap.xml, robots.txt, CNAME
 
 ## 5. Réservation en ligne (Google)
 
-- **Parcours** : le client choisit d'abord **À domicile** ou **À l'atelier** (Lavaur), puis ses véhicules et formules. Les boutons « Réserver » mènent à `#choix-lieu`. Pour l'atelier, aucune adresse n'est demandée : l'adresse envoyée au serveur est celle de `reservation.lieux` (« Atelier Tout'Net, 81500 Lavaur »), et le champ `lieu` est ajouté à la demande (ignoré par `Code.gs` pour l'instant). L'adresse exacte de l'atelier reste à demander à Quentin.
+- **Parcours** : le client choisit d'abord **À domicile** ou **À l'atelier** (Lavaur), puis son véhicule (type) et les options. Les boutons « Réserver » mènent à `#choix-lieu`. Pour l'atelier, aucune adresse n'est demandée : l'adresse envoyée au serveur est celle de `reservation.lieux` (« Atelier Tout'Net, 81500 Lavaur »), et le champ `lieu` est ajouté à la demande (ignoré par `Code.gs` pour l'instant). L'adresse exacte de l'atelier reste à demander à Quentin.
 
 Le serveur tourne sur le **compte Google de Tout'Net** (tout.net81@gmail.com), avec Google Apps Script. Le code est dans `reservation/Code.gs`. Le site l'interroge via `apiUrl`.
 
@@ -147,7 +143,7 @@ Si une modification touche aux conditions (annulation, paiement, prix…), mets 
 
 - Le site est déclaré dans **Google Search Console**, avec le sitemap `https://toutnet-nettoyage.fr/sitemap.xml`.
 - Il existe une **fiche Google Business Profile** « Tout'Net », de catégorie « Service d'esthétique automobile », en zone desservie avec l'adresse masquée.
-- Dans `index.html`, il y a la balise `<title>`, la `meta description`, les balises Open Graph et un bloc **JSON-LD** (`AutoWash`). Ce bloc contient notamment `priceRange` (90 € – 150 €), `areaServed` et les coordonnées. **Si les prix, la zone ou les coordonnées changent, mets aussi ces balises à jour.** La meta description mentionne « Dès 90 € ».
+- Dans `index.html`, il y a la balise `<title>`, la `meta description`, les balises Open Graph et un bloc **JSON-LD** (`AutoWash`). Ce bloc contient notamment `priceRange` (125 € – 155 €), `areaServed` et les coordonnées. **Si les prix, la zone ou les coordonnées changent, mets aussi ces balises à jour.** La meta description mentionne « Dès 125 € ».
 - Si une nouvelle page est créée, ajoute-la dans `sitemap.xml`. Les pages privées comme `decision.html` en sont exclues et restent bloquées dans `robots.txt`.
 
 ## 8. Idées et demandes en attente

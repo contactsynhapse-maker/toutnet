@@ -575,3 +575,9 @@ button, input, textarea { font: inherit; }
 .lieu-carte__btn { margin-top: auto; width: 100%; }
 .lieux-section__note { margin: 24px 0 0; text-align: center; color: var(--c-muted); font-size: .94rem; }
 .lieux-section__note a { color: var(--c-blue); font-weight: 700; text-decoration: none; }
+
+/* Une seule prestation : carte centrée */
+.formulas:has(> .formula:only-child) { grid-template-columns: minmax(0, 680px); justify-content: center; }
+.formulas:has(> .formula:only-child) .formula--featured { transform: none; }
+.estimate__devis { margin: 6px 0 0; font-size: .86rem; color: rgba(255,255,255,.75); }
+@media (max-width: 520px) { .formula__prices { grid-template-columns: 1fr; gap: 8px; } .formula__prices li { align-items: baseline; } }

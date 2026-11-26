@@ -63,7 +63,7 @@ window.SITE_CONFIG = {
      ------------------------------------------------------------------ */
   avantages: [
     { icone: "mobile",     titre: "À domicile ou à l'atelier", texte: "Chez vous, sur votre lieu de travail ou à l'atelier de Lavaur : vous choisissez." },
-    { icone: "formules",   titre: "Deux formules",        texte: "De l'aspiration rapide au nettoyage complet par extraction." },
+    { icone: "formules",   titre: "Nettoyage complet",    texte: "Aspiration, plastiques, vitres et shampouinage des sièges par extraction." },
     { icone: "remise",     titre: "Tarifs dégressifs",    texte: "−10 % de 2 à 4 véhicules, −15 % à partir de 5." },
     { icone: "calendrier", titre: "Réservation en ligne", texte: "Composez votre formule et choisissez votre créneau en quelques clics." },
   ],
@@ -72,48 +72,39 @@ window.SITE_CONFIG = {
      TYPES DE VÉHICULES & PRIX (nets, TVA non applicable)
      prixMin / prixMax : fourchette affichée dans « Tarifs » (flyer).
      image : photo affichée sous le nom (assets/vehicules/…), facultative.
-     prix : prix de chaque formule pour ce véhicule, utilisé pour
-            l'estimation. La différence s'affiche à côté de la formule.
-            Formule 1 = bas de la fourchette, formule 2 = haut de la
-            fourchette (validé par Quentin). Les options s'ajoutent ensuite.
+     prix : prix de la prestation pour ce véhicule (clé "formule-2",
+            seule prestation proposée depuis le 26/11/2026). Les options
+            s'ajoutent ensuite.
+     devis: true : pas de prix affiché, « Prix sur devis ».
      ------------------------------------------------------------------ */
   vehicules: [
-    { id: "citadine",   nom: "Citadine",            image: "assets/vehicules/citadine.jpg",   prixMin: 90,  prixMax: 130, prix: { "formule-1": 90, "formule-2": 130 } },
-    { id: "break-suv",  nom: "Break · SUV",         image: "assets/vehicules/break-suv.jpg",  prixMin: 90,  prixMax: 140, prix: { "formule-1": 90, "formule-2": 140 } },
-    { id: "7-places",   nom: "7 places (van)",      image: "assets/vehicules/7-places.jpg",   prixMin: 100, prixMax: 150, prix: { "formule-1": 100, "formule-2": 150 } },
-    { id: "camion",     nom: "Camion",              image: "assets/vehicules/camion.jpg",     prixMin: 100, prixMax: 150, prix: { "formule-1": 100, "formule-2": 150 } },
-    { id: "utilitaire", nom: "Utilitaire",          image: "assets/vehicules/utilitaire.jpg", prixMin: 100, prixMax: 150, prix: { "formule-1": 100, "formule-2": 150 }, note: "Prix en fonction du véhicule" },
-    { id: "commercial", nom: "Voiture commerciale", image: "assets/vehicules/commercial.jpg", prixMin: 90,  prixMax: 120, prix: { "formule-1": 90, "formule-2": 120 }, note: "Prix variable selon la propreté" },
+    { id: "citadine",   nom: "Citadine",            image: "assets/vehicules/citadine.jpg",  prixMin: 125, prixMax: 125, prix: { "formule-2": 125 } },
+    { id: "break-suv",  nom: "Berline · SUV",       image: "assets/vehicules/break-suv.jpg", prixMin: 140, prixMax: 140, prix: { "formule-2": 140 } },
+    { id: "7-places",   nom: "7 places (van)",      image: "assets/vehicules/7-places.jpg",  prixMin: 155, prixMax: 155, prix: { "formule-2": 155 } },
+    { id: "commercial", nom: "Voiture commerciale", image: "assets/vehicules/commercial.jpg", devis: true },   // À DÉFINIR — prix
   ],
 
   /* ------------------------------------------------------------------
-     FORMULES
+     PRESTATION (une seule depuis le 26/11/2026, décision de Quentin)
+     L'ancienne « Formule 1 · Aspiration à sec » est retirée ; son contenu
+     est inclus dans la prestation ci-dessous.
      ------------------------------------------------------------------ */
   formules: [
     {
-      id: "formule-1",
-      etiquette: "Formule 1 · La plus rapide",
-      nom: "Aspiration à sec",
-      sousTitre: "Un intérieur propre et soigné, sans shampouineuse",
-      duree: "Environ 2 h",
-      accroche: "Un nettoyage complet de l'habitacle, fait dans le détail : Quentin aspire, dépoussière et dégraisse chaque partie du véhicule, jusque dans les recoins.",
+      id: "formule-2",   // ne pas changer : identifiant utilisé par la réservation (onglet « Durées »)
+      etiquette: "Nettoyage intérieur",
+      nom: "Nettoyage complet par extraction",
+      sousTitre: "Pour un intérieur impeccable, en profondeur",
+      duree: "Environ 3 h",
+      accroche: "La shampouineuse injecte puis aspire l'eau dans les tissus et extrait la saleté incrustée, là où un simple aspirateur ne va pas.",
       inclus: [
         "Aspiration complète de l'habitacle : sièges, tapis et moquettes",
         "Nettoyage et aspiration du coffre",
         "Dépoussiérage de tous les plastiques : tableau de bord, écran, panneaux de porte, vide-poches",
         "Dégraissage des vitres et du pare-brise",
         "Nettoyage des contours de portières",
+        "Shampouinage des sièges par extraction",
       ],
-    },
-    {
-      id: "formule-2",
-      etiquette: "Formule 2 · La plus qualitative",
-      nom: "Nettoyage complet par extraction",
-      sousTitre: "Pour un intérieur impeccable, en profondeur",
-      duree: "Environ 3 h",
-      accroche: "La formule recommandée par Quentin : la shampouineuse injecte puis aspire l'eau dans les tissus et extrait la saleté incrustée, là où un simple aspirateur ne va pas.",
-      inclus: ["Tout le contenu de la formule 1 : aspiration, plastiques, vitres et portières", "Shampouinage des sièges par extraction", "Nettoyage approfondi de l'habitacle"],
-      badge: "★ Recommandée · Résultat impeccable",
       miseEnAvant: true,
     },
   ],
@@ -123,8 +114,8 @@ window.SITE_CONFIG = {
      `groupe` (facultatif) : une seule option du même groupe peut être cochée.
      ------------------------------------------------------------------ */
   options: [
-    { id: "vehicule-tres-sale", nom: "Véhicule très sale", prix: 20, description: "Supplément indicatif, ajusté sur place selon l'état réel." },
-    { id: "poils-animaux",      nom: "Poils d'animaux",    prix: 15, description: "Supplément pour les véhicules de nos compagnons à poils." },
+    { id: "vehicule-tres-sale", nom: "Véhicule très sale", prix: 30, description: "Supplément indicatif, ajusté sur place selon l'état réel." },
+    { id: "poils-animaux",      nom: "Beaucoup de poils d'animaux", prix: 20, description: "Supplément pour les véhicules de nos compagnons à poils." },
   ],
 
   /* ------------------------------------------------------------------
