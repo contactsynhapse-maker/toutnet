@@ -659,3 +659,22 @@ button, input, textarea { font: inherit; }
 .choice-devis__texte { color: var(--c-muted); font-size: .84rem; line-height: 1.45; }
 .choice-devis__lien { margin-top: auto; color: var(--c-blue); font-weight: 700; font-size: .88rem; }
 @media (max-width: 600px) { .choice-devis { padding: 10px; } .choice-devis__texte { font-size: .76rem; } .choice-devis__lien { font-size: .8rem; } }
+
+/* ---------- Avant / Après : carrousel horizontal ---------- */
+.gallery__aide { margin: 6px auto 0; font-size: .86rem; opacity: .7; max-width: 520px; }
+.gallery--carrousel {
+  display: flex; flex-wrap: nowrap; gap: 20px; align-items: flex-start; overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-padding: 0 var(--gutter); padding: 4px 2px 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.gallery--carrousel::-webkit-scrollbar { display: none; }
+/* Toutes les comparaisons au même format (carré) pour un défilement régulier */
+.gallery--carrousel figure { flex: 0 0 auto; min-width: 0; scroll-snap-align: center; width: min(440px, 86%); }
+.gallery--carrousel .ba { aspect-ratio: 1 / 1 !important; }
+@media (max-width: 700px) { .gallery--carrousel { display: flex; gap: 14px; } }
+.gallery-nav { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 14px; }
+.gallery-nav__btn { width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--c-yellow); color: var(--c-navy); cursor: pointer; display: grid; place-items: center; padding: 0; }
+.gallery-nav__btn svg { width: 22px; height: 22px; }
+.gallery-nav__btn:disabled { opacity: .35; cursor: default; }
+.gallery-nav__points { display: flex; gap: 8px; }
+.gallery-nav__point { width: 10px; height: 10px; border-radius: 50%; border: 0; padding: 0; background: rgba(255,255,255,.35); cursor: pointer; transition: width .2s, background .2s; }
+.gallery-nav__point.is-active { width: 26px; border-radius: 999px; background: var(--c-yellow); }

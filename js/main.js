@@ -298,6 +298,46 @@
     });
   }
 
+  /* ---------- Carrousel horizontal des avant / après ---------- */
+  function initCarrousel() {
+    var box = $("[data-galerie]"), nav = $("[data-galerie-nav]");
+    if (!box || !nav) return;
+    var figs = Array.prototype.slice.call(box.children);
+    if (figs.length < 2) return;
+    box.classList.add("gallery--carrousel");
+    nav.hidden = false;
+    var points = $("[data-galerie-points]");
+    figs.forEach(function (f, i) {
+      var b = el("button", { type: "button", class: "gallery-nav__point", "aria-label": "Voir la comparaison " + (i + 1) });
+      b.addEventListener("click", function () { aller(i); });
+      points.appendChild(b);
+    });
+    function actif() {
+      var centre = box.scrollLeft + box.clientWidth / 2, best = 0, dist = Infinity;
+      figs.forEach(function (f, i) { var d = Math.abs(f.offsetLeft + f.offsetWidth / 2 - centre); if (d < dist) { dist = d; best = i; } });
+      if (box.scrollLeft < 4) best = 0;
+      if (box.scrollLeft + box.clientWidth >= box.scrollWidth - 4) best = figs.length - 1;
+      return best;
+    }
+    function aller(i) {
+      i = Math.max(0, Math.min(figs.length - 1, i));
+      var f = figs[i];
+      box.scrollTo({ left: f.offsetLeft - (box.clientWidth - f.offsetWidth) / 2, behavior: "smooth" });
+    }
+    function maj() {
+      var a = actif();
+      Array.prototype.forEach.call(points.children, function (p, i) { p.classList.toggle("is-active", i === a); p.setAttribute("aria-current", i === a ? "true" : "false"); });
+      $("[data-galerie-prec]").disabled = box.scrollLeft < 4;
+      $("[data-galerie-suiv]").disabled = box.scrollLeft + box.clientWidth >= box.scrollWidth - 4;
+    }
+    $("[data-galerie-prec]").addEventListener("click", function () { aller(actif() - 1); });
+    $("[data-galerie-suiv]").addEventListener("click", function () { aller(actif() + 1); });
+    var t; box.addEventListener("scroll", function () { clearTimeout(t); t = setTimeout(maj, 60); }, { passive: true });
+    window.addEventListener("resize", maj);
+    window.addEventListener("load", maj);
+    maj();
+  }
+
   function initSlider(ba) {
     var range = ba.querySelector(".ba__range");
     function set(p) { p = Math.max(0, Math.min(100, p)); ba.style.setProperty("--pos", p + "%"); range.value = p; }
@@ -358,6 +398,7 @@
   renderFormules();
   renderTarifs();
   renderGalerie();
+  initCarrousel();
   renderContact();
   initNav();
 
