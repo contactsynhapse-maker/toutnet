@@ -201,9 +201,9 @@ window.SITE_CONFIG = {
       { id: "atelier", icone: "atelier", nom: "À l'atelier",
         description: "Vous amenez votre véhicule à l'atelier Tout'Net, à Lavaur.",
         accroche: "Vous amenez votre véhicule à l'atelier Tout'Net, à Lavaur.",
-        etiquetteVilles: "Adresse", villes: ["12 rue Roger Galaup, Lavaur"],
+        etiquetteVilles: "Adresse", villes: ["Lavaur"],
         bouton: "Réserver à l'atelier",
-        adresse: { rue: "12 rue Roger Galaup", cp: "81500", ville: "Lavaur" } },
+        adresse: { rue: "Atelier Tout'Net", cp: "81500", ville: "Lavaur" } },   // ne pas mettre l'adresse exacte ici : elle est dans l'onglet « Réglages » (adresse_atelier) et n'est envoyée qu'avec la confirmation
     ],
 
     // Adresse du service Google Apps Script (voir toutnet/reservation/GUIDE.md).

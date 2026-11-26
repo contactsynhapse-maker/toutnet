@@ -55,7 +55,17 @@ var REGLAGES_DEFAUT = [
   ["horizon_jours", 45, "Nombre de jours à l'avance où l'on peut réserver."],
   ["free_sms_user", "", "Optionnel — SMS de notification (abonnés Free Mobile) : identifiant."],
   ["free_sms_pass", "", "Optionnel — SMS Free Mobile : clé d'identification."],
+  ["adresse_atelier", "", "Adresse complète de l'atelier (ex. « 12 rue …, 81500 Lavaur »). Jamais affichée sur le site : envoyée au client seulement dans l'e-mail de confirmation."],
 ];
+
+/* Réservations « à l'atelier » : le site envoie l'adresse « Atelier Tout'Net, 81500 Lavaur ».
+   L'adresse exacte (réglage adresse_atelier) sert au calcul des trajets, à l'agenda de
+   Quentin et à l'e-mail de confirmation, mais n'est jamais affichée sur le site. */
+var NOM_ATELIER = "Atelier Tout'Net";
+function estAtelier(rue) { return String(rue || "").indexOf(NOM_ATELIER) === 0; }
+function adresseReelle(R, adresse) {
+  return estAtelier(adresse) && R.adresse_atelier ? String(R.adresse_atelier) : adresse;
+}
 
 // Doivent correspondre aux identifiants `id` de js/config.js du site.
 var VEHICULES = [["citadine", "Citadine"], ["break-suv", "SUV"], ["berline", "Berline"], ["7-places", "7 places (van)"], ["commercial", "Voiture commerciale"]];
@@ -142,7 +152,7 @@ function disponibilites(vehicules, adresseClient) {
   var now = Date.now();
   var debut = now + Number(R.delai_minimum_heures) * 3600000;
   var fin = now + Number(R.horizon_jours) * 86400000;
-  var starts = creneauxPossibles(R, duree, debut, fin, adresseClient);
+  var starts = creneauxPossibles(R, duree, debut, fin, adresseReelle(R, adresseClient));
 
   var jours = [], index = {};
   starts.forEach(function (s) {
@@ -213,7 +223,7 @@ function reserver(d) {
   try {
     // Le créneau est-il toujours libre ?
     var limite = Date.now() + Number(R.delai_minimum_heures) * 3600000;
-    var adresseClient = ad.rue + ", " + ad.cp + " " + ad.ville;
+    var adresseClient = adresseReelle(R, ad.rue + ", " + ad.cp + " " + ad.ville);
     var possibles = creneauxPossibles(R, duree, Math.max(limite, debut.getTime() - 86400000), debut.getTime() + 86400000, adresseClient);
     if (possibles.indexOf(debut.getTime()) === -1) {
       return { ok: false, erreur: "creneau_indisponible", message: "Ce créneau n'est plus disponible." };
@@ -223,6 +233,7 @@ function reserver(d) {
     jeton = Utilities.getUuid();
     var resume = resumeVehicules(vehicules);
     var adresse = ad.rue + ", " + ad.cp + " " + ad.ville;
+    if (estAtelier(ad.rue)) adresse = NOM_ATELIER + (R.adresse_atelier ? " — " + R.adresse_atelier : ", " + ad.cp + " " + ad.ville);
 
     ev = agenda(R.agenda_rendezvous, "rendez-vous").createEvent(
       "⏳ À CONFIRMER — " + c.prenom + " " + c.nom + " (" + vehicules.length + " véh.)", debut, fin,
@@ -465,7 +476,7 @@ function emailClient(R, resa, type, message) {
     '<div style="font-size:13px;font-weight:bold;color:#1e6be6;margin-bottom:6px">Message de Quentin</div>' +
     '<div style="white-space:pre-line">' + esc(message) + "</div></div>" : "";
   if (type === "refusee" && message) mot += '<p>Vous pouvez aussi choisir un autre créneau sur <a href="' + esc(site) + '#reserver">notre site</a>.</p>';
-  var html = gabarit(t[0], "<p>" + t[1] + "</p>" + mot + (type === "refusee" ? "" : blocResa(resa)) +
+  var html = gabarit(t[0], "<p>" + t[1] + "</p>" + mot + (type === "refusee" ? "" : blocResa(resa, false, type === "confirmee" ? R : null)) +
     "<p>Une question ? Répondez simplement à cet e-mail" + (contact ? " ou appelez-nous " + contact : "") + ".</p><p>L'équipe " + esc(nom) + "</p>");
   MailApp.sendEmail({ to: resa.email, subject: nom + " — " + t[0], htmlBody: html, name: nom,
     replyTo: R.email_notification || Session.getEffectiveUser().getEmail() });
@@ -656,14 +667,22 @@ function dateFr(iso) {
   var j = Number(Utilities.formatDate(d, TZ, "u")) % 7;
   return jours[j] + " " + Number(Utilities.formatDate(d, TZ, "d")) + " " + mois[Number(Utilities.formatDate(d, TZ, "M")) - 1];
 }
-function blocResa(r, pourQuentin) {
+/* R (réglages) n'est passé que pour l'e-mail de confirmation et pour Quentin :
+   c'est là seulement que l'adresse exacte de l'atelier apparaît. */
+function blocResa(r, pourQuentin, R) {
   var adresse = r.rue + ", " + r.cp + " " + r.ville;
+  if (estAtelier(r.rue)) {
+    var confirmation = !!R;
+    R = R || (pourQuentin ? lireReglages() : null);
+    adresse = R && R.adresse_atelier ? NOM_ATELIER + ", " + R.adresse_atelier
+      : NOM_ATELIER + ", " + r.ville + (pourQuentin || confirmation ? "" : " (adresse exacte envoyée avec la confirmation)");
+  }
   var maps = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(adresse);
   var ligne = function (k, v) { return '<tr><td style="padding:6px 12px 6px 0;color:#5b6b8c;vertical-align:top;white-space:nowrap">' + k + '</td><td style="padding:6px 0;font-weight:600">' + v + "</td></tr>"; };
   return '<table style="border-collapse:collapse;font-size:15px;margin:8px 0">' +
     ligne("Référence", esc(r.reference)) +
     ligne("Date", esc(dateFr(r.date)) + " à " + esc(r.heure) + (r.fin ? " (fin estimée " + esc(r.fin) + ")" : "")) +
-    ligne("Adresse", pourQuentin ? '<a href="' + maps + '">' + esc(adresse) + "</a>" : esc(adresse)) +
+    ligne(estAtelier(r.rue) ? "Lieu" : "Adresse", pourQuentin ? '<a href="' + maps + '">' + esc(adresse) + "</a>" : esc(adresse)) +
     ligne("Véhicules", esc(r.vehicules).replace(/\n/g, "<br>")) +
     ligne("Estimation", esc(r.estimation || "—")) +
     (pourQuentin ? ligne("Téléphone", '<a href="tel:' + esc(String(r.telephone).replace(/\s/g, "")) + '">' + esc(r.telephone) + "</a>") + ligne("E-mail", esc(r.email)) : "") +

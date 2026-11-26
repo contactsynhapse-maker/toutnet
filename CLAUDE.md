@@ -43,7 +43,7 @@ Ce fichier est destiné à Claude. Il résume tout ce qu'il faut savoir pour fai
 - **Sauvegardes** : quand Quentin demande d'« enregistrer le site », crée une branche `sauvegarde-AAAA-MM-JJ` à partir de `main` (l'envoi d'étiquettes Git est bloqué depuis les sessions). Pour revenir à une sauvegarde, remets son contenu sur `main` après accord de Quentin. Sauvegardes existantes :
   - `sauvegarde-2026-11-24` : site d'origine (couleurs vives, carte de zone) ;
   - `sauvegarde-2026-11-26` : couleurs « bleu nuit / jaune mat », section « Chez vous ou à l'atelier », choix du lieu au début de la réservation.
-- **Cache des téléphones** : les fichiers CSS et JS sont appelés avec un numéro de version (`style.css?v=20261126-3`, dans `index.html`, `mentions-legales.html`, `decision.html`). **À chaque modification d'un fichier CSS ou JS, augmente ce numéro dans les trois pages**, sinon les téléphones (surtout le navigateur d'Instagram) gardent l'ancienne version. Pour une image remplacée sous le même nom, ajoute aussi `?v=N` à son chemin dans `config.js`.
+- **Cache des téléphones** : les fichiers CSS et JS sont appelés avec un numéro de version (`style.css?v=20261126-4`, dans `index.html`, `mentions-legales.html`, `decision.html`). **À chaque modification d'un fichier CSS ou JS, augmente ce numéro dans les trois pages**, sinon les téléphones (surtout le navigateur d'Instagram) gardent l'ancienne version. Pour une image remplacée sous le même nom, ajoute aussi `?v=N` à son chemin dans `config.js`.
 - Après publication, invite Quentin à recharger la page sur son téléphone. Si l'ancienne version reste affichée, c'est le cache : tirer vers le bas pour recharger, ou attendre une minute.
 
 ## 4. Organisation des fichiers
@@ -111,7 +111,8 @@ sitemap.xml, robots.txt, CNAME
 
 ## 5. Réservation en ligne (Google)
 
-- **Parcours** : le client choisit d'abord **À domicile** ou **À l'atelier** (Lavaur), puis la formule (deux colonnes), le type de véhicule et les options. Les boutons « Réserver » mènent à `#choix-lieu`. Pour l'atelier, aucune adresse n'est demandée : l'adresse envoyée au serveur est celle de `reservation.lieux` (« Atelier Tout'Net, 81500 Lavaur »), et le champ `lieu` est ajouté à la demande (ignoré par `Code.gs` pour l'instant). Adresse de l'atelier : **12 rue Roger Galaup, 81500 Lavaur** (envoyée au serveur pour les réservations à l'atelier, affichée dans la section Lieux et à l'étape Date). Reste à savoir si le client attend sur place ou laisse son véhicule.
+- **Parcours** : le client choisit d'abord **À domicile** ou **À l'atelier** (Lavaur), puis la formule (deux colonnes), le type de véhicule et les options. Les boutons « Réserver » mènent à `#choix-lieu`. Pour l'atelier, aucune adresse n'est demandée : le site envoie « Atelier Tout'Net, 81500 Lavaur » et le champ `lieu`.
+- **Adresse de l'atelier (décision de Quentin, 27/11/2026)** : **le site n'affiche que « Lavaur »**. L'adresse exacte est rangée dans l'onglet « Réglages » de la feuille Google (clé `adresse_atelier`) et n'apparaît que dans l'e-mail de **confirmation** envoyé au client (et pour Quentin : agenda, e-mail de demande, calcul des trajets). Ne l'écris jamais dans `config.js`, `Code.gs` ni dans ce fichier : tout le dépôt est publié sur le site. Seule exception : les mentions légales, qui doivent légalement indiquer l'adresse de l'entreprise. Reste à savoir si le client attend sur place ou laisse son véhicule.
 
 Le serveur tourne sur le **compte Google de Tout'Net** (tout.net81@gmail.com), avec Google Apps Script. Le code est dans `reservation/Code.gs`. Le site l'interroge via `apiUrl`.
 

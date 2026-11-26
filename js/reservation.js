@@ -92,7 +92,7 @@
   }
   function adresse() { var a = champsAdresse(); return a.rue + ", " + a.cp + " " + a.ville; }
   function adresseComplete() { var a = champsAdresse(); return !!(a.rue && /^\d{5}$/.test(a.cp) && a.ville); }
-  function lieuTexte() { var a = adresseAtelier(); return a ? "À l'atelier Tout'Net · " + a.rue + ", " + a.cp + " " + a.ville : adresse(); }
+  function lieuTexte() { var a = adresseAtelier(); return a ? "À l'atelier Tout'Net · " + a.ville : adresse(); }
   function plusOuPrix(n) { return (n > 0 ? "+" : "") + euros(n); }
 
   /* =================================================================
@@ -656,7 +656,7 @@
     atelierBox.appendChild(el("span", { class: "atelier-info__icone", html: Site.icons.atelier, "aria-hidden": "true" }));
     atelierBox.appendChild(el("div", null, [
       el("strong", { text: "Prestation à l'atelier Tout'Net" }),
-      el("span", { text: a.rue + ", " + a.cp + " " + a.ville }),
+      el("span", { text: a.ville + " · l'adresse exacte vous est envoyée par e-mail avec la confirmation du rendez-vous" }),
       el("button", { type: "button", class: "link-btn", "data-changer-lieu": "" }, ["Changer de lieu"]),
     ]));
   }
