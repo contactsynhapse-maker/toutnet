@@ -47,7 +47,7 @@ window.SITE_CONFIG = {
     horaires: "",             // À DÉFINIR (facultatif)
     // Lien « Laisser un avis Google » (fiche Google > « Demander des avis »,
     // du type https://g.page/r/…/review). Tant qu'il est vide, rien ne s'affiche.
-    avisGoogle: "",
+    avisGoogle: "https://g.page/r/CTkHyD7xRv62ECE/review",
   },
 
   /* ------------------------------------------------------------------

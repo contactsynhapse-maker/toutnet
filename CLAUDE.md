@@ -43,7 +43,7 @@ Ce fichier est destiné à Claude. Il résume tout ce qu'il faut savoir pour fai
 - **Sauvegardes** : quand Quentin demande d'« enregistrer le site », crée une branche `sauvegarde-AAAA-MM-JJ` à partir de `main` (l'envoi d'étiquettes Git est bloqué depuis les sessions). Pour revenir à une sauvegarde, remets son contenu sur `main` après accord de Quentin. Sauvegardes existantes :
   - `sauvegarde-2026-11-24` : site d'origine (couleurs vives, carte de zone) ;
   - `sauvegarde-2026-11-26` : couleurs « bleu nuit / jaune mat », section « Chez vous ou à l'atelier », choix du lieu au début de la réservation.
-- **Cache des téléphones** : les fichiers CSS et JS sont appelés avec un numéro de version (`style.css?v=20261126-8`, dans `index.html`, `mentions-legales.html`, `decision.html`). **À chaque modification d'un fichier CSS ou JS, augmente ce numéro dans les trois pages**, sinon les téléphones (surtout le navigateur d'Instagram) gardent l'ancienne version. Pour une image remplacée sous le même nom, ajoute aussi `?v=N` à son chemin dans `config.js`.
+- **Cache des téléphones** : les fichiers CSS et JS sont appelés avec un numéro de version (`style.css?v=20261126-9`, dans `index.html`, `mentions-legales.html`, `decision.html`). **À chaque modification d'un fichier CSS ou JS, augmente ce numéro dans les trois pages**, sinon les téléphones (surtout le navigateur d'Instagram) gardent l'ancienne version. Pour une image remplacée sous le même nom, ajoute aussi `?v=N` à son chemin dans `config.js`.
 - Après publication, invite Quentin à recharger la page sur son téléphone. Si l'ancienne version reste affichée, c'est le cache : tirer vers le bas pour recharger, ou attendre une minute.
 
 ## 4. Organisation des fichiers
@@ -162,7 +162,7 @@ Si une modification touche aux conditions (annulation, paiement, prix…), mets 
 
 ## 8. Idées et demandes en attente
 
-- **Bouton « Laisser un avis Google »** : prêt depuis le 27/11/2026 (encadré dans Contact + lien « ★ Laisser un avis Google » en bas de page), **masqué tant que `contact.avisGoogle` est vide** dans `config.js`. Quentin doit fournir son lien d'avis (fiche Google, bouton « Demander des avis », lien du type `https://g.page/r/…/review`). Ne fabrique pas ce lien toi-même. Plus tard : afficher la note et le nombre d'avis (demande de Quentin) ; le faire automatiquement demande l'API Google Places (clé, service externe) : à discuter avec lui avant.
+- **Bouton « Laisser un avis Google »** : en ligne (prêt depuis le 27/11/2026 (encadré dans Contact + lien « ★ Laisser un avis Google » en bas de page), activé le 27/11/2026 avec le lien fourni par Quentin (`contact.avisGoogle` dans `config.js`, trouvé via Google Maps / business.google.com → « Demander des avis »). Ne fabrique jamais ce lien toi-même. Plus tard : afficher la note et le nombre d'avis (demande de Quentin) ; le faire automatiquement demande l'API Google Places (clé, service externe) : à discuter avec lui avant.
 - **Section « Qui suis-je ? »** : texte et photo de Quentin (`presentation` dans `config.js`).
 - **Médiateur de la consommation** : voir §6.
 - **Photos** : remplacer les photos de véhicules génériques (`assets/vehicules/`) par de vraies photos si Quentin en fournit, et ajouter de nouvelles paires avant/après au fil des prestations.
