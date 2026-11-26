@@ -177,8 +177,8 @@ window.SITE_CONFIG = {
      détecté automatiquement.
      ------------------------------------------------------------------ */
   galerie: [
-    { titre: "Volkswagen Tiguan",  description: "", avant: "assets/photos/tiguan-avant.jpg", apres: "assets/photos/tiguan-apres.jpg" },
-    { titre: "Citroën C3",         description: "", avant: "assets/photos/c3-avant.jpg",     apres: "assets/photos/c3-apres.jpg" },
+    { titre: "Volkswagen Tiguan",  description: "Véhicule utilisé dans une ferme.", avant: "assets/photos/tiguan-avant.jpg", apres: "assets/photos/tiguan-apres.jpg" },
+    { titre: "Citroën C3",         description: "Véhicule utilisé par sa propriétaire pour ses trajets à la campagne.", avant: "assets/photos/c3-avant.jpg",     apres: "assets/photos/c3-apres.jpg" },
     { titre: "Banquette arrière", description: "Véhicule d'un particulier qui transporte régulièrement ses deux golden retrievers.", avant: "assets/photos/banquette-avant.jpg", apres: "assets/photos/banquette-apres.jpg" },
     { titre: "Coffre",            description: "Mercedes Classe E après un transport de végétaux.",                                   avant: "assets/photos/coffre-avant.jpg",    apres: "assets/photos/coffre-apres.jpg" },
   ],
