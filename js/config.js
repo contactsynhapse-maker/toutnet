@@ -215,7 +215,7 @@ window.SITE_CONFIG = {
     maxVehicules: 10,
 
     // Texte affiché sous l'estimation de prix.
-    mentionEstimation: "Prix estimé, net de TVA (TVA non applicable, art. 293 B du CGI). Les suppléments liés à l'état du véhicule sont confirmés sur place par Quentin.",
+    mentionEstimation: "Prix estimé, net de TVA (TVA non applicable, art. 293 B du CGI). Quentin se réserve le droit de vérifier sur place l'état du véhicule afin d'adapter la prestation.",
 
     // Aperçu : si apiUrl est vide et demo: true, des créneaux d'EXEMPLE
     // sont affichés et aucune demande n'est envoyée. Ignoré quand apiUrl

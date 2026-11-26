@@ -43,7 +43,7 @@ Ce fichier est destiné à Claude. Il résume tout ce qu'il faut savoir pour fai
 - **Sauvegardes** : quand Quentin demande d'« enregistrer le site », crée une branche `sauvegarde-AAAA-MM-JJ` à partir de `main` (l'envoi d'étiquettes Git est bloqué depuis les sessions). Pour revenir à une sauvegarde, remets son contenu sur `main` après accord de Quentin. Sauvegardes existantes :
   - `sauvegarde-2026-11-24` : site d'origine (couleurs vives, carte de zone) ;
   - `sauvegarde-2026-11-26` : couleurs « bleu nuit / jaune mat », section « Chez vous ou à l'atelier », choix du lieu au début de la réservation.
-- **Cache des téléphones** : les fichiers CSS et JS sont appelés avec un numéro de version (`style.css?v=20261126-4`, dans `index.html`, `mentions-legales.html`, `decision.html`). **À chaque modification d'un fichier CSS ou JS, augmente ce numéro dans les trois pages**, sinon les téléphones (surtout le navigateur d'Instagram) gardent l'ancienne version. Pour une image remplacée sous le même nom, ajoute aussi `?v=N` à son chemin dans `config.js`.
+- **Cache des téléphones** : les fichiers CSS et JS sont appelés avec un numéro de version (`style.css?v=20261126-5`, dans `index.html`, `mentions-legales.html`, `decision.html`). **À chaque modification d'un fichier CSS ou JS, augmente ce numéro dans les trois pages**, sinon les téléphones (surtout le navigateur d'Instagram) gardent l'ancienne version. Pour une image remplacée sous le même nom, ajoute aussi `?v=N` à son chemin dans `config.js`.
 - Après publication, invite Quentin à recharger la page sur son téléphone. Si l'ancienne version reste affichée, c'est le cache : tirer vers le bas pour recharger, ou attendre une minute.
 
 ## 4. Organisation des fichiers
@@ -145,6 +145,8 @@ Déjà en place :
 - conditions de réservation : **annulation gratuite jusqu'à 24 h avant**, **paiement sur place à la fin de la prestation**.
 
 Avant d'envoyer sa demande, le client coche une case d'acceptation des conditions.
+
+Depuis le 27/11/2026, le petit texte sous l'estimation (`mentionEstimation`) et les conditions précisent : « Quentin (Tout'Net) se réserve le droit de vérifier sur place l'état du véhicule afin d'adapter la prestation. » (Volontairement discret, à la demande de Quentin.)
 
 **Reste à faire** : le **médiateur de la consommation**, obligatoire pour une entreprise qui vend à des particuliers. Un emplacement surligné en jaune (`<span class="todo">`) attend son **nom** et l'**adresse de son site**. Quand Quentin les donne, remplace le `<span class="todo">…</span>` par le texte final, avec un lien vers le site du médiateur. Supprime aussi la règle CSS `.todo` en haut du fichier si plus rien ne l'utilise.
 
