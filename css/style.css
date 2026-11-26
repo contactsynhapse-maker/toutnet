@@ -678,3 +678,10 @@ button, input, textarea { font: inherit; }
 .gallery-nav__points { display: flex; gap: 8px; }
 .gallery-nav__point { width: 10px; height: 10px; border-radius: 50%; border: 0; padding: 0; background: rgba(255,255,255,.35); cursor: pointer; transition: width .2s, background .2s; }
 .gallery-nav__point.is-active { width: 26px; border-radius: 999px; background: var(--c-yellow); }
+
+/* ---------- Avis Google ---------- */
+.avis { margin: 36px auto 8px; max-width: 560px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.25); border-radius: var(--radius); padding: 24px 22px; text-align: center; }
+.avis__etoiles { margin: 0; color: var(--c-yellow); font-size: 1.5rem; letter-spacing: .15em; }
+.avis__titre { margin: 6px 0 4px; font-weight: 800; font-size: 1.15rem; }
+.avis__texte { margin: 0 0 18px; opacity: .85; font-size: .95rem; }
+.footer__avis { color: var(--c-yellow); font-weight: 700; text-decoration: none; }

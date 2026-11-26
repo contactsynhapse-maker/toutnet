@@ -45,6 +45,9 @@ window.SITE_CONFIG = {
     instagram: "tout.net81",
     zone: "À domicile ou à l'atelier de Lavaur",
     horaires: "",             // À DÉFINIR (facultatif)
+    // Lien « Laisser un avis Google » (fiche Google > « Demander des avis »,
+    // du type https://g.page/r/…/review). Tant qu'il est vide, rien ne s'affiche.
+    avisGoogle: "",
   },
 
   /* ------------------------------------------------------------------

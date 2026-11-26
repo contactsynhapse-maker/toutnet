@@ -263,6 +263,18 @@
     parts.forEach(function (p, i) { if (i) infos.appendChild(document.createTextNode("  ·  ")); infos.appendChild(p); });
     if (filled(c.horaires)) { infos.appendChild(el("br")); infos.appendChild(document.createTextNode(c.horaires)); }
 
+    // Avis Google : encadré dans Contact + lien en bas de page (si le lien est renseigné)
+    if (filled(c.avisGoogle)) {
+      var avis = $("[data-avis]");
+      avis.hidden = false;
+      avis.appendChild(el("p", { class: "avis__etoiles", "aria-hidden": "true", text: "★★★★★" }));
+      avis.appendChild(el("p", { class: "avis__titre", text: "Tout'Net est intervenu sur votre véhicule ?" }));
+      avis.appendChild(el("p", { class: "avis__texte", text: "Votre avis compte, qu'il soit positif ou non : il aide Quentin à s'améliorer et les futurs clients à se décider." }));
+      avis.appendChild(el("a", { class: "btn btn--accent btn--large", href: c.avisGoogle.trim(), target: "_blank", rel: "noopener", text: "Laisser un avis Google" }));
+      var fa = $("[data-footer-avis]");
+      if (fa) { fa.href = c.avisGoogle.trim(); fa.hidden = false; }
+    }
+
     var box = $("[data-contact-buttons]");
     contactLinks().forEach(function (l, i) { box.appendChild(linkButton(l, i === 0 ? "btn--accent btn--large" : "btn--white btn--large")); });
   }
