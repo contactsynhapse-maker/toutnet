@@ -28,7 +28,7 @@ window.SITE_CONFIG = {
     logoComplet: "assets/logo.png",
     badge: "Nettoyage de véhicules · Mobile",
     accroche: "Service de nettoyage",
-    sousAccroche: "Un intérieur de véhicule impeccable, sans vous déplacer.",
+    sousAccroche: "Votre habitacle impeccable, dans tous ses recoins.",
     slogan: "Tout'Net reste à votre service, car ce qui compte, c'est la propreté.",
   },
 
@@ -94,11 +94,25 @@ window.SITE_CONFIG = {
      ------------------------------------------------------------------ */
   formules: [
     {
+      id: "formule-1",   // ne pas changer : identifiant utilisé par la réservation (onglet « Durées »)
+      etiquette: "Plus légère · Plus abordable",
+      nom: "Le compromis",
+      nomCourt: "Le compromis",
+      sousTitre: "Un bon nettoyage de l'intérieur, à prix doux",
+      duree: "Environ 1 h 30",
+      inclus: [
+        "Aspiration de l'intérieur",
+        "Nettoyage des plastiques",
+        "Nettoyage des vitres",
+        "Lustrage des plastiques",
+      ],
+    },
+    {
       id: "formule-2",   // ne pas changer : identifiant utilisé par la réservation (onglet « Durées »)
       etiquette: "En profondeur",
       nom: "Nettoyage intérieur complet",
       nomCourt: "Nettoyage intérieur",
-      sousTitre: "Le meilleur nettoyage, qui redonne vie à votre véhicule",
+      sousTitre: "La formule la plus complète, celle que nous recommandons",
       duree: "Environ 2 h 30",
       accroche: "La shampouineuse injecte puis aspire l'eau dans les tissus et extrait la saleté incrustée, là où un simple aspirateur ne va pas.",
       inclus: [
@@ -109,24 +123,11 @@ window.SITE_CONFIG = {
         "Nettoyage des contours de portières",
         "Shampouinage des sièges par extraction",
       ],
-      badge: "Premium",
+      badge: "Recommandée",
       miseEnAvant: true,
     },
-    {
-      id: "formule-1",   // ne pas changer : identifiant utilisé par la réservation (onglet « Durées »)
-      etiquette: "Plus légère · Plus abordable",
-      nom: "Le compromis",
-      nomCourt: "Le compromis",
-      sousTitre: "Un bon nettoyage, plus léger",
-      duree: "Environ 1 h 30",
-      inclus: [
-        "Aspiration de l'intérieur",
-        "Nettoyage des plastiques",
-        "Nettoyage des vitres",
-        "Lustrage des plastiques",
-      ],
-    },
   ],
+
 
 
   /* ------------------------------------------------------------------
@@ -189,13 +190,17 @@ window.SITE_CONFIG = {
     // du client (calcul des créneaux, agenda, e-mails).
     lieux: [
       { id: "domicile", icone: "domicile", nom: "À domicile",
-        description: "Chez vous ou sur votre lieu de travail : Toulouse, Albi, Castres, Gaillac, Lacaune.",
-        accroche: "Quentin vient chez vous ou sur votre lieu de travail.",
-        etiquetteVilles: "Déplacements", villes: ["Toulouse", "Albi", "Castres", "Gaillac", "Lacaune"],
+        description: "Chez vous ou sur votre lieu de travail. Prévoyez une prise électrique et un point d'eau.",
+        accroche: "Quentin vient chez vous ou sur votre lieu de travail, et nettoie votre véhicule pendant que vous êtes au bureau ou en courses.",
+        details: [
+          "Il apporte ses produits, ses machines et son matériel de séchage : tout comme à l'atelier.",
+          "Il vous suffit de prévoir une prise électrique et un point d'eau.",
+        ],
+        etiquetteVilles: "Déplacements", villes: ["Toulouse", "Albi", "Castres", "Lavaur", "Graulhet", "Gaillac", "Lacaune"],   // Graulhet : À CONFIRMER (« Croyé » dans la demande de Quentin)
         bouton: "Réserver à domicile" },
       { id: "atelier", icone: "atelier", nom: "À l'atelier",
         description: "Vous amenez votre véhicule à l'atelier Tout'Net, à Lavaur.",
-        accroche: "Vous amenez votre véhicule à l'atelier Tout'Net.",
+        accroche: "Vous amenez votre véhicule à l'atelier Tout'Net, à Lavaur.",
         etiquetteVilles: "Adresse", villes: ["Lavaur"],
         bouton: "Réserver à l'atelier",
         adresse: { rue: "Atelier Tout'Net", cp: "81500", ville: "Lavaur" } },   // À COMPLÉTER — adresse exacte de l'atelier

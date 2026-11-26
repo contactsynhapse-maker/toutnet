@@ -92,14 +92,14 @@ sitemap.xml, robots.txt, CNAME
 
   Camion et Utilitaire ont été retirés le 26/11/2026. `berline` est un nouvel id (27/11/2026) : il faut les lignes `berline|formule-1` et `berline|formule-2` dans l'onglet « Durées » de la feuille Google, sinon la réservation d'une berline échoue (« Durée inconnue »). La berline n'a pas encore de photo.
 
-- `formules` : deux formules, affichées dans cet ordre.
-  - `formule-2` **Nettoyage intérieur complet** (premium, badge « Premium »), environ **2 h 30** : aspiration complète, coffre, dépoussiérage des plastiques, vitres et pare-brise, contours de portières, shampouinage des sièges par extraction.
-  - `formule-1` **Le compromis** (prix d'appel), environ **1 h 30** : aspiration de l'intérieur, nettoyage des plastiques, nettoyage des vitres, lustrage des plastiques.
+- `formules` : deux formules, affichées dans cet ordre (27/11/2026 : compromis à gauche, complet à droite, **même taille** ; le complet reste en bleu avec le badge « Recommandée »).
+  - `formule-1` **Le compromis** (prix d'appel), environ **1 h 30** : aspiration de l'intérieur, nettoyage des plastiques, nettoyage des vitres, lustrage des plastiques. À ne pas présenter comme un mauvais choix.
+  - `formule-2` **Nettoyage intérieur complet** (badge « Recommandée »), environ **2 h 30** : aspiration complète, coffre, dépoussiérage des plastiques, vitres et pare-brise, contours de portières, shampouinage des sièges par extraction.
 
   Dans la réservation, après « domicile / atelier », le client voit les deux formules en **deux colonnes** (« à partir de » le prix citadine), puis le type de véhicule, puis les options. Champs : `etiquette`, `nom`, `nomCourt` (colonnes de la réservation), `sousTitre`, `duree`, `accroche`, `inclus`, `badge`, `miseEnAvant`.
 - `options` : Véhicule très sale **+30 €** (ajusté sur place) et Beaucoup de poils d'animaux **+20 €**. Le prix des options **s'ajoute** à celui de la formule (exemple affiché sur le site : SUV en nettoyage intérieur complet très sale = 140 + 30 = 170 €).
 - `packs` : remise selon le nombre de véhicules d'une même réservation. Famille −10 % de 2 à 4 véhicules, Flotte entreprise −15 % dès 5 véhicules. Avec `appliquer: true`, la remise est déduite de l'estimation.
-- `sectionLieux` : titre et intro de la section « Chez vous ou à l'atelier ». **Il n'y a plus de carte ni de « zone »** (décision de Quentin, 24/11/2026) : à domicile (déplacements Toulouse, Albi, Castres, Gaillac, Lacaune) ou à l'atelier de Lavaur.
+- `sectionLieux` : titre et intro de la section « Chez vous ou à l'atelier ». **Il n'y a plus de carte ni de « zone »** (décision de Quentin, 24/11/2026) : à domicile (déplacements Toulouse, Albi, Castres, Lavaur, Graulhet — à confirmer —, Gaillac, Lacaune ; Quentin apporte produits, machines et séchage, le client prévoit une prise électrique et un point d'eau) ou à l'atelier de Lavaur. Sous les cartes, encadré « Une question sur votre domicile ? » avec le numéro.
 - `galerie` : photos avant/après, avec `titre`, `description` (phrase affichée sous le titre), `avant` et `apres`.
   - Les deux photos d'une paire doivent avoir **le même cadrage et les mêmes dimensions**, sinon le curseur décale l'image.
   - Format JPG, 1200–1600 px de large, moins de 500 Ko environ.

@@ -215,18 +215,17 @@ button, input, textarea { font: inherit; }
 .formula__prices strong { font-weight: 800; color: var(--c-blue); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .formula--featured .formula__prices { border-top-color: rgba(255,255,255,.25); }
 .formula--featured .formula__prices span { color: rgba(255,255,255,.85); }
-.formula--featured .formula__prices strong { color: var(--c-yellow); font-size: 1rem; }
+.formula--featured .formula__prices strong { color: var(--c-yellow); }
 .formula--featured .formula__pitch { color: var(--c-white); background: rgba(255,255,255,.1); border-left: 3px solid var(--c-yellow); padding: 10px 14px; border-radius: 0 10px 10px 0; }
 @media (min-width: 761px) {
-  .formulas { grid-template-columns: 1.15fr 1fr; align-items: center; }
-  .formula--featured { padding: 40px 34px 34px; transform: translateY(-4px); }
+  .formulas { grid-template-columns: 1fr 1fr; align-items: stretch; }
 }
-@media (max-width: 760px) { .formula--featured { order: -1; } }
 .formula li { display: flex; align-items: center; gap: 12px; font-weight: 500; }
 .check {
   width: 24px; height: 24px; border-radius: 50%; flex: none; background: var(--c-yellow) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230e2a5c' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center / 14px no-repeat;
 }
-.formula .btn { margin-top: auto; }
+.formula .btn { margin-top: 0; }
+.formula__prices { margin-top: auto !important; }
 .formula--featured { background: linear-gradient(160deg, var(--c-blue) 0%, var(--c-blue-deep) 100%); border-color: var(--c-yellow); color: var(--c-white); box-shadow: var(--shadow-lg); }
 .formula--featured .formula__tag { color: var(--c-yellow); }
 .formula--featured .formula__sub { color: rgba(255,255,255,.8); }
@@ -573,8 +572,16 @@ button, input, textarea { font: inherit; }
 .lieu-carte__villes { list-style: none; padding: 0; margin: 0 0 24px; display: flex; flex-wrap: wrap; gap: 8px; }
 .lieu-carte__villes li { background: var(--c-tint); color: var(--c-navy); font-weight: 600; padding: 6px 14px; border-radius: 999px; font-size: .94rem; }
 .lieu-carte__btn { margin-top: auto; width: 100%; }
-.lieux-section__note { margin: 24px 0 0; text-align: center; color: var(--c-muted); font-size: .94rem; }
-.lieux-section__note a { color: var(--c-blue); font-weight: 700; text-decoration: none; }
+.lieu-carte__details { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 10px; }
+.lieu-carte__details li { display: flex; gap: 10px; align-items: flex-start; font-size: .95rem; line-height: 1.5; }
+.lieu-carte__details .check { margin-top: 2px; }
+.lieux-question { margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px;
+  background: var(--c-white); border: 2px solid var(--c-yellow); border-radius: var(--radius); padding: 20px 24px; }
+.lieux-question__texte { display: grid; gap: 4px; flex: 1 1 280px; }
+.lieux-question__texte strong { color: var(--c-navy); font-size: 1.08rem; }
+.lieux-question__texte span { color: var(--c-muted); font-size: .94rem; line-height: 1.5; }
+.lieux-question__tel { font-size: 1.1rem; white-space: nowrap; }
+@media (max-width: 520px) { .lieux-question { padding: 18px; } .lieux-question__tel { width: 100%; } }
 
 /* Une seule prestation : carte centrée */
 .formulas:has(> .formula:only-child) { grid-template-columns: minmax(0, 680px); justify-content: center; }

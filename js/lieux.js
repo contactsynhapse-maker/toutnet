@@ -24,16 +24,25 @@
       el("span", { class: "lieu-carte__icone", html: Site.icons[l.icone] || "", "aria-hidden": "true" }),
       el("h3", { text: l.nom }),
       el("p", { class: "lieu-carte__texte", text: l.accroche || l.description || "" }),
+      (l.details || []).length ? el("ul", { class: "lieu-carte__details" }, l.details.map(function (d) {
+        return el("li", null, [el("span", { class: "check", "aria-hidden": "true" }), d]);
+      })) : null,
       (l.villes || []).length ? el("p", { class: "lieu-carte__etiquette", text: l.etiquetteVilles || "" }) : null,
       (l.villes || []).length ? el("ul", { class: "lieu-carte__villes" }, l.villes.map(function (v) { return el("li", { text: v }); })) : null,
       el("a", { class: "btn btn--accent lieu-carte__btn", href: "#choix-lieu", "data-choisir-lieu": l.id, text: l.bouton || "Réserver" }),
     ]));
   });
 
+  // Encadré « Une question sur votre domicile ? » avec le numéro bien visible
   var note = section.querySelector("[data-lieux-note]");
   if (TEL) {
-    note.appendChild(document.createTextNode("Une question avant de réserver ? Appelez Quentin au "));
-    note.appendChild(el("a", { href: "tel:+" + String((C.contact || {}).telephone || "").replace(/\D/g, ""), text: TEL }));
-    note.appendChild(document.createTextNode("."));
-  }
+    note.appendChild(el("span", { class: "lieux-question__texte" }, [
+      el("strong", { text: "Une question sur votre domicile ?" }),
+      el("span", { text: "Vous vous demandez si Quentin se déplace jusqu'à chez vous ? Contactez-nous directement." }),
+    ]));
+    var a = el("a", { class: "btn btn--accent lieux-question__tel", href: "tel:+" + String((C.contact || {}).telephone || "").replace(/\D/g, "") });
+    a.appendChild(Site.icon("phone"));
+    a.appendChild(document.createTextNode(TEL));
+    note.appendChild(a);
+  } else note.hidden = true;
 })();
