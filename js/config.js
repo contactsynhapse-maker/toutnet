@@ -79,9 +79,9 @@ window.SITE_CONFIG = {
      ------------------------------------------------------------------ */
   vehicules: [
     { id: "citadine",   nom: "Citadine",            image: "assets/vehicules/citadine.jpg",  prixMin: 80,  prixMax: 125, prix: { "formule-1": 80,  "formule-2": 125 } },
-    { id: "break-suv",  nom: "SUV",                 image: "assets/vehicules/break-suv.jpg", prixMin: 90,  prixMax: 140, prix: { "formule-1": 90,  "formule-2": 140 }, note: "Ex. 3008, Tiguan, Sportage" },
-    { id: "berline",    nom: "Berline",             image: "",                               prixMin: 100, prixMax: 140, prix: { "formule-1": 100, "formule-2": 140 }, note: "Ex. 308, Golf, 330d" },   // À CONFIRMER — prix « Nettoyage intérieur complet » repris de l'ancien « Berline · SUV » ; photo à fournir
-    { id: "7-places",   nom: "7 places (van)",      image: "assets/vehicules/7-places.jpg",  prixMin: 110, prixMax: 155, prix: { "formule-1": 110, "formule-2": 155 } },
+    { id: "break-suv",  nom: "SUV",                 image: "assets/vehicules/break-suv.jpg", prixMin: 90,  prixMax: 149, prix: { "formule-1": 90,  "formule-2": 149 }, note: "Ex. 3008, Tiguan, Sportage" },
+    { id: "berline",    nom: "Berline",             image: "",                               prixMin: 100, prixMax: 139, prix: { "formule-1": 100, "formule-2": 139 }, note: "Ex. 308, Golf, 330d" },   // photo à fournir
+    { id: "7-places",   nom: "7 places (van)",      image: "assets/vehicules/7-places.jpg",  prixMin: 110, prixMax: 165, prix: { "formule-1": 110, "formule-2": 165 } },
     { id: "commercial", nom: "Voiture commerciale", image: "assets/vehicules/commercial.jpg", devis: true },   // À DÉFINIR — prix
   ],
 
@@ -231,7 +231,8 @@ window.SITE_CONFIG = {
       "berline|formule-1": 90,     "berline|formule-2": 150,
       "7-places|formule-1": 90,    "7-places|formule-2": 150,
       "commercial|formule-1": 90,  "commercial|formule-2": 150,
-      "option|vehicule-tres-sale": 30,   // À CONFIRMER — temps en plus si très sale
+      "option|vehicule-tres-sale": 30,   // +30 min (Quentin, 27/11/2026)
+      "option|poils-animaux": 30,        // +30 min (Quentin, 27/11/2026)
     },
   },
 };

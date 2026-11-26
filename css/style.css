@@ -614,3 +614,5 @@ button, input, textarea { font: inherit; }
 .fchoice input:checked + .fchoice__box .fchoice__prix small { color: rgba(255,255,255,.75); }
 .fchoice input:checked + .fchoice__box .fchoice__prix strong { color: var(--c-yellow); }
 .fchoice input:checked + .fchoice__box .fchoice__check { background: var(--c-yellow); border-color: var(--c-yellow); color: var(--c-navy); }
+.estimate__duree { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: -6px; color: rgba(255,255,255,.85); }
+.estimate__duree strong { color: var(--c-white); font-size: 1.15rem; }

@@ -71,7 +71,7 @@ var DUREES_DEFAUT = {
   "7-places|formule-1": 90, "7-places|formule-2": 150,
   "commercial|formule-1": 90, "commercial|formule-2": 150,
   "option|vehicule-tres-sale": 30,
-  "option|poils-animaux": 0,                                   // À CONFIRMER
+  "option|poils-animaux": 30,
 };
 
 /* =====================================================================

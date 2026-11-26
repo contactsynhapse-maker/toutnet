@@ -221,7 +221,7 @@
       ]));
     });
     var opt = $("[data-options]");
-    if ((C.options || []).length) opt.appendChild(el("p", { class: "extras__title", text: "Options : leur prix s'ajoute à celui de la formule. Par exemple, un SUV en nettoyage intérieur complet (140 €) très sale revient à 140 € + 30 € = 170 €." }));
+    if ((C.options || []).length) opt.appendChild(el("p", { class: "extras__title", text: "Options : leur prix s'ajoute à celui de la formule. Par exemple, un SUV en nettoyage intérieur complet (149 €) très sale revient à 149 € + 30 € = 179 €." }));
     (C.options || []).forEach(function (o) {
       opt.appendChild(el("div", { class: "extra" }, [
         el("span", { class: "extra__price", text: o.nom + (o.prix ? " +" + euros(o.prix) : "") }),

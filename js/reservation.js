@@ -60,15 +60,19 @@
       return { type: v.type, formule: v.formule, niveau: v.niveau || "", options: v.options.slice() };
     });
   }
+  // Durée affichée au client : durées de js/config.js (reservation.durees),
+  // formule + 30 min par option (règle de Quentin, 27/11/2026).
+  function dureeVehicule(v) {
+    var D = state.durees || {};
+    var d = D[v.type + "|" + v.formule];
+    if (typeof d !== "number") return null;
+    (v.options || []).forEach(function (o) { d += D["option|" + o] || 0; });
+    if (v.niveau) d += D["etat|" + v.niveau] || 0;
+    return d;
+  }
   function dureeLocale() {
-    if (!state.durees) return null;
     var total = 0, ok = true;
-    signature().forEach(function (v) {
-      var d = state.durees[v.type + "|" + v.formule];
-      if (typeof d !== "number") ok = false; else total += d;
-      v.options.forEach(function (o) { total += state.durees["option|" + o] || 0; });
-      if (v.niveau) total += state.durees["etat|" + v.niveau] || 0;
-    });
+    signature().forEach(function (v) { var d = dureeVehicule(v); if (d == null) ok = false; else total += d; });
     return ok && total ? total : null;
   }
   function formatDuree(min) {
@@ -105,30 +109,36 @@
       ]));
       return e;
     }
+    var plusieurs = e.details.length > 1;
     e.details.forEach(function (d) {
       var bloc = el("div", { class: "estimate__vehicle" }, [el("p", { class: "estimate__vtitle", text: d.titre })]);
       var ul = el("ul", { class: "estimate__lines" });
       d.lignes.forEach(function (l) {
         ul.appendChild(el("li", { class: l.option ? "is-option" : "" }, [el("span", { text: l.label }), el("span", { text: l.option ? plusOuPrix(l.prix) : euros(l.prix) })]));
       });
-      if (d.lignes.length > 1) ul.appendChild(el("li", { class: "is-subtotal" }, [el("span", { text: "Sous-total" }), el("span", { text: (d.partiel ? "dès " : "") + euros(d.sousTotal) })]));
+      if (plusieurs) {
+        var dv = d.formule ? dureeVehicule(state.vehicules[d.index]) : null;
+        ul.appendChild(el("li", { class: "is-subtotal" }, [el("span", { text: "Montant du véhicule" }), el("span", { text: (d.partiel ? "dès " : "") + euros(d.sousTotal) })]));
+        if (dv) ul.appendChild(el("li", null, [el("span", { text: "Durée estimée" }), el("span", { text: formatDuree(dv) })]));
+      }
       bloc.appendChild(ul);
       if (d.devis) bloc.appendChild(el("p", { class: "estimate__devis", text: "Quentin vous indiquera le prix après votre demande." }));
       box.appendChild(bloc);
     });
-    var foot = el("ul", { class: "estimate__lines estimate__foot" });
     if (e.pack) {
-      foot.appendChild(el("li", { class: "is-discount" }, [
+      box.appendChild(el("ul", { class: "estimate__lines estimate__foot" }, [el("li", { class: "is-discount" }, [
         el("span", { text: "Pack " + e.pack.nom + " (" + e.nb + " véhicules) −" + e.pack.remise + " %" }),
         el("span", { text: "− " + euros(e.remise) }),
-      ]));
+      ])]));
     }
-    var d = dureeLocale();
-    if (d) foot.appendChild(el("li", null, [el("span", { text: "Durée estimée de l'intervention" }), el("span", { text: formatDuree(d) })]));
-    if (foot.children.length) box.appendChild(foot);
     box.appendChild(el("div", { class: "estimate__top estimate__total-row" }, [
-      el("span", { class: "estimate__label", text: "Prix estimé" }),
+      el("span", { class: "estimate__label", text: "Montant total" }),
       el("span", { class: "estimate__total", text: Site.prixTexte(e) }),
+    ]));
+    var duree = dureeLocale();
+    if (duree) box.appendChild(el("div", { class: "estimate__duree" }, [
+      el("span", { text: plusieurs ? "Durée totale estimée" : "Durée estimée" }),
+      el("strong", { text: formatDuree(duree) }),
     ]));
     if (filled(R.mentionEstimation)) box.appendChild(el("p", { class: "estimate__note", text: R.mentionEstimation }));
     return e;
@@ -859,7 +869,6 @@
 
   /* ---------- Démarrage ---------- */
   if (API) {
-    api({ action: "durees" }).then(function (d) { if (d && d.ok) { state.durees = d.durees; renderDetail(estimateBox); } }).catch(function () {});
   }
   goTo(1, { noScroll: true });
 })();

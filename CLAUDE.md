@@ -85,9 +85,9 @@ sitemap.xml, robots.txt, CNAME
   | Véhicule (`id`) | Le compromis | Nettoyage intérieur complet |
   |---|---|---|
   | Citadine (`citadine`) | 80 € | 125 € |
-  | SUV (`break-suv`) — ex. 3008, Tiguan, Sportage | 90 € | 140 € |
-  | Berline (`berline`) — ex. 308, Golf, 330d | 100 € | 140 € (à confirmer par Quentin) |
-  | 7 places (`7-places`) | 110 € | 155 € |
+  | SUV (`break-suv`) — ex. 3008, Tiguan, Sportage | 90 € | 149 € |
+  | Berline (`berline`) — ex. 308, Golf, 330d | 100 € | 139 € |
+  | 7 places (`7-places`) | 110 € | 165 € |
   | Voiture commerciale (`commercial`) | sur devis | sur devis |
 
   Camion et Utilitaire ont été retirés le 26/11/2026. `berline` est un nouvel id (27/11/2026) : il faut les lignes `berline|formule-1` et `berline|formule-2` dans l'onglet « Durées » de la feuille Google, sinon la réservation d'une berline échoue (« Durée inconnue »). La berline n'a pas encore de photo.
@@ -97,7 +97,7 @@ sitemap.xml, robots.txt, CNAME
   - `formule-2` **Nettoyage intérieur complet** (badge « Recommandée »), environ **2 h 30** : aspiration complète, coffre, dépoussiérage des plastiques, vitres et pare-brise, contours de portières, shampouinage des sièges par extraction.
 
   Dans la réservation, après « domicile / atelier », le client voit les deux formules en **deux colonnes** (« à partir de » le prix citadine), puis le type de véhicule, puis les options. Champs : `etiquette`, `nom`, `nomCourt` (colonnes de la réservation), `sousTitre`, `duree`, `accroche`, `inclus`, `badge`, `miseEnAvant`.
-- `options` : Véhicule très sale **+30 €** (ajusté sur place) et Beaucoup de poils d'animaux **+20 €**. Le prix des options **s'ajoute** à celui de la formule (exemple affiché sur le site : SUV en nettoyage intérieur complet très sale = 140 + 30 = 170 €).
+- `options` : Véhicule très sale **+30 €** (ajusté sur place) et Beaucoup de poils d'animaux **+20 €**. Le prix des options **s'ajoute** à celui de la formule (exemple affiché sur le site : SUV en nettoyage intérieur complet très sale = 149 + 30 = 179 €). **Chaque option ajoute 30 min** à la durée..
 - `packs` : remise selon le nombre de véhicules d'une même réservation. Famille −10 % de 2 à 4 véhicules, Flotte entreprise −15 % dès 5 véhicules. Avec `appliquer: true`, la remise est déduite de l'estimation.
 - `sectionLieux` : titre et intro de la section « Chez vous ou à l'atelier ». **Il n'y a plus de carte ni de « zone »** (décision de Quentin, 24/11/2026) : à domicile (déplacements Toulouse, Albi, Castres, Lavaur, Graulhet — à confirmer —, Gaillac, Lacaune ; Quentin apporte produits, machines et séchage, le client prévoit une prise électrique et un point d'eau) ou à l'atelier de Lavaur. Sous les cartes, encadré « Une question sur votre domicile ? » avec le numéro.
 - `galerie` : photos avant/après, avec `titre`, `description` (phrase affichée sous le titre), `avant` et `apres`.
@@ -116,6 +116,7 @@ Le serveur tourne sur le **compte Google de Tout'Net** (tout.net81@gmail.com), a
   - Exemple réel : une dispo de 17 h 30 à 20 h (2 h 30) ne permet **pas** une formule 2 (3 h). Elle permet une formule 1 (2 h) à 17 h 30 ou 18 h.
   - Si Quentin dit « mes dispos n'apparaissent pas », vérifie d'abord ce point. Rappelle aussi le délai minimum de 24 h avant un rendez-vous et l'horizon de 45 jours (onglet « Réglages »).
 - **Rendez-vous** : chaque demande crée un événement « ⏳ À CONFIRMER » dans l'agenda **« Tout'Net — Rendez-vous »** et une ligne dans la feuille Google Sheets **« Tout'Net — Réservations »**. Quentin reçoit un email avec **Accepter / Refuser**. Ces boutons ouvrent `decision.html`, où il peut ajouter un message personnel au client. Le client reçoit un email à chaque étape.
+- **Estimation affichée au client** (27/11/2026) : lignes du véhicule, puis **« Montant total »** et juste dessous **« Durée estimée »** (formule : 1 h 30 ou 2 h 30, + 30 min par option). Cette durée affichée vient de `reservation.durees` dans `config.js` ; le calcul des créneaux, lui, utilise l'onglet « Durées » de la feuille Google : les deux doivent rester identiques.
 - **Réglages sans toucher au code** : dans la feuille Google, l'onglet **« Réglages »** contient le battement, la marge de trajet, le pas des créneaux, le délai minimum, l'horizon et l'email de notification. L'onglet **« Durées »** contient la durée de chaque véhicule × formule et des options. **Une fois le serveur installé, ce sont les durées de l'onglet « Durées » qui comptent**, pas celles de `config.js`.
 - **Changer un prix ou un texte** : uniquement `js/config.js`. Le serveur ne calcule pas les prix : il reçoit l'estimation affichée au client.
 - **Ajouter un type de véhicule, une formule ou une option** : il faut modifier trois endroits.
@@ -148,7 +149,7 @@ Si une modification touche aux conditions (annulation, paiement, prix…), mets 
 
 - Le site est déclaré dans **Google Search Console**, avec le sitemap `https://toutnet-nettoyage.fr/sitemap.xml`.
 - Il existe une **fiche Google Business Profile** « Tout'Net », de catégorie « Service d'esthétique automobile », en zone desservie avec l'adresse masquée.
-- Dans `index.html`, il y a la balise `<title>`, la `meta description`, les balises Open Graph et un bloc **JSON-LD** (`AutoWash`). Ce bloc contient notamment `priceRange` (80 € – 155 €), `areaServed` et les coordonnées. **Si les prix, la zone ou les coordonnées changent, mets aussi ces balises à jour.** La meta description mentionne « Dès 80 € ».
+- Dans `index.html`, il y a la balise `<title>`, la `meta description`, les balises Open Graph et un bloc **JSON-LD** (`AutoWash`). Ce bloc contient notamment `priceRange` (80 € – 165 €), `areaServed` et les coordonnées. **Si les prix, la zone ou les coordonnées changent, mets aussi ces balises à jour.** La meta description mentionne « Dès 80 € ».
 - Si une nouvelle page est créée, ajoute-la dans `sitemap.xml`. Les pages privées comme `decision.html` en sont exclues et restent bloquées dans `robots.txt`.
 
 ## 8. Idées et demandes en attente
